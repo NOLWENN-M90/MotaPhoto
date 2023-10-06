@@ -21,6 +21,16 @@ window.addEventListener('click', function (event) {
     }
 });
 
+// Filtrer les photos par leur taxonomies sans bouton //
+document.getElementById('category_selector').addEventListener('change', function () {
+    document.getElementById('filter-form').submit();
+});
 
+document.getElementById('format_selector').addEventListener('change', function () {
+    document.getElementById('filter-form').submit();
+});
 
+document.getElementById('date_order').addEventListener('change', function () {
+    document.getElementById('filter-form').submit();
+});
 
