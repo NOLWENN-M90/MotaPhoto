@@ -1,6 +1,24 @@
 <?php get_header(); ?>
 
-<?php the_content(); ?>
+
+<div class="bannerImage">
+    <?php
+    $random_photo_url = get_random_photo();
+    echo $random_photo_url;
+    if (!empty($random_photo_url)) {
+    ?>
+        <div>
+            <img class="banner"src="<?php echo esc_url($random_photo_url); ?>" alt="Photos aléatoire">
+        </div>
+    <?php
+    } else {
+    }
+    ?>
+
+    <h1 class="negative-text">PHOTOGRAPHE EVENT</h1>
+</div>
+
+<?php include_once "template-part/content.php"; ?>
+
 
 <?php get_footer(); ?>
-

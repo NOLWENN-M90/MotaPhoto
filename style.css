@@ -7,8 +7,8 @@ Theme Name: Mota thème
     src: url('/fonts/SpaceMono/SpaceMono-Regular.ttf');
 }
 @font-face{
-    font-family: 'Space Mono1';
-    src: url('\fonts\SpaceMono\SpaceMono-Italic.ttf')
+    font-family: 'Space Mono1', monospace;
+    src: url('/fonts/SpaceMono/SpaceMono-Italic.ttf');
 }
 @font-face {
     font-family: 'Poppins', monospace;
@@ -36,7 +36,9 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-left: 60px;
+    padding-left: 100px;
+    box-shadow: 0px 4px 14px 0px #00000008;
+
 }
 
 nav ul {
@@ -62,10 +64,17 @@ nav ul {
     float: left;
 
 }
-#bannerImage {
+.bannerImage { 
     width: 100%;
-    height: 100%;
+    height:962px;
+    
+}
+.banner{
+    width: 100%;
+    height:962px;
     object-fit: cover;
+
+
 }
 .negative-text {
     font-family: 'Space Mono', monospace;
@@ -163,7 +172,7 @@ display: flex;
 width: 272px;
 height: 50px;
 padding: 8px 15px 8px 55px;
-margin-left:380px;
+margin-left:580px;
 margin-top: 40px;
 margin-bottom:40px;
 justify-content: center;
@@ -182,14 +191,9 @@ box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
 .formulaire{
     width:100%;
     height: 45px;
-    margin-bottom: 20px;
-    margin-top: -50px;
+    margin-bottom: 40px;
+    margin-top: 100px;
 }
-/* .photo {
-    margin-right:10px;
-    max-width:fit-content;
-    margin-bottom: -25px;
-} */
 
 .photo-title {
     color: #333;
@@ -198,7 +202,7 @@ box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
 .photo-content img {
     width: 564px;
     height:495px;
-    margin-bottom: 5px;
+    margin-bottom: -10px;
     margin-right: 10px;
    object-fit: cover;
 }
@@ -217,3 +221,99 @@ box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
     margin-left: 287px;
     margin-right: 0;
 }
+
+#category option{
+    height :42px;
+
+}
+
+
+/* // construction page single-photo // */
+
+.photo-details{
+    display:flex;
+    height: 844px;
+    margin-top:30px;
+    margin-right: 70px;
+    margin-left: 70px;
+    text-transform:uppercase;
+    font-style: italic;
+}
+.thumbnail{
+    display: flex;
+    margin-left:390px;
+    justify-content: flex-end;
+    align-items: flex-end;
+    
+}
+.thumbnail img{
+    width:100%;
+    height:auto;
+}
+.titre{
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width:420px;
+    line-height:58px;
+}
+.titre h2{
+    font-size: 66px;
+    font-weight: 400;
+    margin-left: 25px;
+    font-family: 'Space Mono1', monospace;
+    margin-bottom: 0;
+}
+.list{
+    font-weight: 400;
+    font-style: normal;
+    font-family: 'Space Mono' , monospace;
+    
+}
+.list ul{
+    list-style-type: none;
+    padding-left: 25px;
+}
+ #line-down{
+    width:758px;
+    border: 1px black;
+    margin-left: 25px;
+    margin-bottom: -10px;
+ }
+ .bp{
+    display: flex;
+    margin-top: 20px;
+    margin-bottom:20px;
+    margin-right: 75px;
+    margin-left: 95px;
+    font-weight: 300;
+    
+ }
+ .font{
+    font-family: 'Poppins', monospace;
+    
+ }
+ .myBtn2{
+    margin-left: 240px;
+    cursor: pointer;
+    border:none;
+    background-color: #D8D8D8;
+    Width:272px;
+    Height:50px;
+ }
+ #line{
+    width:1348px;
+    border: 1px black;
+    margin-left: 95px;
+ }
+ .p{
+    font-weight: 400;
+    margin-top: 100px;
+    margin-bottom:50px;
+    font-style: normal;
+    font-family: 'Space Mono' , monospace;
+    margin-left:95px;
+ }
+ .carousel{
+    width:81px;
+ }
