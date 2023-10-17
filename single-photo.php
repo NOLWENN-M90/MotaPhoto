@@ -1,70 +1,70 @@
 <?php get_header(); ?>
 <?php
 
-// Récupérer les paramètres de l'URL
-$photo_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$reference = get_field('reference', $photo_id);
-$terms_category = wp_get_object_terms($photo_id, 'categorie', array('fields' => 'names'));
-$terms_format = wp_get_object_terms($photo_id, 'format', array('fields' => 'names'));
-$type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : '';
-$annee = isset($_GET['annee']) ? sanitize_text_field($_GET['annee']) : '';
-
-
-// Vérifier que l'ID est valide
-if ($photo_id > 0) {
-    // Utilisez l'ID et les autres paramètres pour personnaliser le contenu
-    $photo = get_post($photo_id);
-    if ($photo) {
-        // Récupérer l'URL de l'image à sa taille complète
-        $image_data = wp_get_attachment_image_src($photo_id, 'full');
-        $image_url = $image_data ? $image_data[0] : '';
-
+while (have_posts()) : the_post();
 ?>
-        <div class="photo-details">
-            <div class="titre">
-                <h2><?php echo esc_html($photo->post_title); ?></h2>
-                <div class="list">
-                    <ul>
-                        <li>Référence: <?php echo esc_html($reference); ?></li>
-                        <li>Catégorie: <?php echo esc_html(implode(', ', $terms_category)); ?></li>
-                        <li>Format: <?php echo esc_html(implode(', ', $terms_format)); ?></li>
-                        <li>Type: <?php echo esc_html($type); ?></li>
-                        <li>Année: <?php echo esc_html($annee); ?></li>
+    <div class="photo-details">
+        <div class="titre">
+            <h2><?php the_title() ?></h2>
+            <div class="list">
+                <ul>
+                    <?php
 
-                    </ul>
-                    <div id="line-down">
-                        <hr>
-                    </div>
+                    $reference = get_field('reference');
+                    if ($reference) {
+                        echo '<li>Référence: ' . esc_html($reference) . '</li>';
+                    }
+
+
+                    $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
+                    if (!empty($terms_category)) {
+                        echo '<li>Catégorie: ';
+                        foreach ($terms_category as $term) {
+                            echo $term->name . ' ';
+                        }
+                        echo '</li>';
+                    }
+
+                    $terms_format = wp_get_post_terms(get_the_ID(), 'format');
+                    if (!empty($terms_format)) {
+                        echo '<li>Format: ';
+                        foreach ($terms_format as $term) {
+                            echo $term->name . ' ';
+                        }
+                        echo '</li>';
+                    }
+
+                    $type = get_field('type');
+                    echo '<li>Type: ' . esc_html($type) . '</li>';
+
+                    $annee = get_field('annee');
+                    echo '<li>Année: ' . esc_html($annee) . '</li>';
+                    ?>
+                </ul>
+                <div id="line-down">
+                    <hr>
                 </div>
-
             </div>
-            <div class="thumbnail"><?php echo get_the_post_thumbnail($image_data, 'full'); ?> </div>
-
-
-
         </div>
-
-
+        <div class="thumbnail"><?php echo get_the_post_thumbnail(get_the_ID(), 'full'); ?> </div>
+    </div>
 <?php
-    } else {
-        echo '<p>Photo non trouvée</p>';
-    }
-} else {
-    echo '<p>Identifiant de photo invalide</p>';
-}
+endwhile;
 ?>
-<div class="bp">
+
+<div id="bp">
     <div>
         <p class="font">Cette photo vous intéresse ?</p>
     </div>
     <div>
-        <button class="myBtn2">Contact</button>
+        <button class="myBtn">Contact</button>
+
     </div>
     <div class="carousel">
         <?php
         // Récupérer les autres photos de la même catégorie
         $related_photos = new WP_Query(array(
-            'post_type' => 'photo',
+            'post_type' => 'photos',
             'posts_per_page' => -1,
             'tax_query' => array(
                 array(

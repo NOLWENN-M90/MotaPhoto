@@ -1,5 +1,4 @@
 <?php
-
 function montheme_supports()
 {
 	add_theme_support('title-tag');
@@ -14,6 +13,7 @@ add_action('after_setup_theme', 'montheme_supports');
 function theme_enqueue_style()
 {
 	wp_enqueue_style('mota-theme', get_template_directory_uri() . '/style.css');
+
 }
 
 function enqueue_custom_scripts() {
@@ -30,6 +30,8 @@ function enqueue_custom_scripts() {
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 
 add_action('wp_enqueue_scripts', 'theme_enqueue_style');
+
+// On intègre un bouton "Contact" au Menu en haut de page
 function add_search_form2($items, $args)
 {
 	if ($args->theme_location == 'header') {
@@ -40,6 +42,129 @@ function add_search_form2($items, $args)
 	return $items;
 }
 add_filter('wp_nav_menu_items', 'add_search_form2', 10, 2);
+
+// On affiche une image de façon aléatoire dans la baanière à chaque actualisation
+function get_random_photo() {
+	
+    $args = array(
+        'post_type'      => 'photo',
+        'posts_per_page' => 1,
+        'orderby'        => 'rand', // Ordre aléatoire
+    );
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        $query->the_post();
+        $random_photo_url = get_the_post_thumbnail_url();
+        var_dump($random_photo_url); // Ajout pour le débogage
+        return $random_photo_url;
+    }
+
+    // Retourne une image par défaut ou une chaîne vide si aucune image n'est trouvée.
+    return 'fonction ok'; 
+}
+
+// Fonction Ajax pour récupérer les informations de la photo
+add_action('wp_ajax_get_photo_info', 'get_photo_info_callback');
+add_action('wp_ajax_nopriv_get_photo_info', 'get_photo_info_callback');
+
+// On fait appel à Ajax et pour le bouton de pagination de la page d'accueil
+function load_more_photos() {
+    $offset = $_POST['offset'];
+    $photos_to_load = $_POST['photos_to_load'];
+
+    // Construire les arguments de la requête WP_Query pour charger plus de photos
+    $args = array(
+        'post_type' => 'photo',
+        'posts_per_page' => $photos_to_load,
+        'offset' => $offset,
+       
+    );
+
+    $query_photos = new WP_Query($args);
+
+    if ($query_photos->have_posts()) :
+        while ($query_photos->have_posts()) :
+            $query_photos->the_post();
+            
+        endwhile;
+    endif;
+
+    wp_reset_postdata();
+
+    die();
+}
+
+add_action('wp_ajax_load_more_photos', 'load_more_photos');
+add_action('wp_ajax_nopriv_load_more_photos', 'load_more_photos');
+
+// On ajoute une fonction query_photo et renvoyer les photos filtrées
+function get_filtered_photos() {
+    if (isset($_POST['action']) && $_POST['action'] == 'get_filtered_photos') {
+        $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
+        $format = isset($_POST['format']) ? sanitize_text_field($_POST['format']) : '';
+        $annee = isset($_POST['annee']) ? sanitize_text_field($_POST['annee']) : '';
+
+        // Initialise un tableau d'arguments pour WP_Query basé sur les filtres
+        $args = array(
+            'post_type' => 'photo',
+            'posts_per_page' => -1,
+            'tax_query' => array(),
+            'meta_query' => array(),
+        );
+
+        // Ajoute la taxonomie 'Catégorie' à la requête si une catégorie est sélectionnée
+        if ($category) {
+            $args['tax_query'][] = array(
+                'taxonomy' => 'categorie',
+                'field' => 'slug',
+                'terms' => $category,
+            );
+        }
+
+        // Ajoute la taxonomie 'Format' à la requête si un format est sélectionné
+        if ($format) {
+            $args['tax_query'][] = array(
+                'taxonomy' => 'format',
+                'field' => 'slug',
+                'terms' => $format,
+            );
+        }
+
+        // Ajoute un filtre basé sur le champ ACF 'Année' si une année est sélectionnée
+        if ($annee) {
+            $args['meta_query'][] = array(
+                'key' => 'annee',
+                'value' => $annee,
+                'compare' => '=',
+            );
+        }
+
+        // Utilise WP_Query pour obtenir les résultats
+        $query = new WP_Query($args);
+
+        ob_start();  // Commence la capture de la sortie
+        if ($query->have_posts()) {
+            while ($query->have_posts()) {
+                $query->the_post();
+                // Affiche chaque photo
+                echo '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
+            }
+        } else {
+            echo 'Aucune photo trouvée.';
+        }
+        wp_reset_postdata();
+        $output = ob_get_clean();  // Récupère la sortie capturée
+
+        echo $output;
+        wp_die();
+    }
+}
+
+// Assurez-vous d'ajouter l'action pour les utilisateurs connectés et non connectés
+add_action('wp_ajax_get_filtered_photos', 'get_filtered_photos');
+add_action('wp_ajax_nopriv_get_filtered_photos', 'get_filtered_photos');
 
 
 function register_custom_post_type_photo()
@@ -70,42 +195,5 @@ register_taxonomy('format', 'photo', array(
 	'hierarchical' => false,
 
 ));
-function get_random_photo() {
-	
-    $args = array(
-        'post_type'      => 'photo',
-        'posts_per_page' => 1,
-        'orderby'        => 'rand', // Ordre aléatoire
-    );
-
-    $query = new WP_Query($args);
-
-    if ($query->have_posts()) {
-        $query->the_post();
-        $random_photo_url = get_the_post_thumbnail_url();
-        var_dump($random_photo_url); // Ajout pour le débogage
-        return $random_photo_url;
-    }
-
-    // Retourne une image par défaut ou une chaîne vide si aucune image n'est trouvée.
-    return 'fonction ok'; 
-}
-
-// Fonction Ajax pour récupérer les informations de la photo
-add_action('wp_ajax_get_photo_info', 'get_photo_info_callback');
-add_action('wp_ajax_nopriv_get_photo_info', 'get_photo_info_callback');
-
-function get_photo_info_callback() {
-    $image_url = $_POST['image_url'];
-
-    //Récupérer le titre de la photo
-    $photo_title = get_the_title(); 
-
-    // Envoyer les informations de la photo en tant que réponse Ajax
-    echo 'Titre de la photo : ' . $photo_title;
-
-    wp_die();
-}
-
 
 

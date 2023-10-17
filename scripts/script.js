@@ -1,7 +1,6 @@
+console.log("js ok");
+
 // Get the modal
-console.log("js ok")
-
-
 var modal = document.getElementById('myModal');
 var overlay = document.getElementById("backgroundOverlay");
 
@@ -11,89 +10,70 @@ btn.forEach(function (button) {
         overlay.style.display = "block";
         modal.style.display = "block";
     });
-
-})
+});
 
 window.addEventListener('click', function (event) {
     if (event.target === overlay) {
-        modal.style.display = "none"; // Masquez la modal
-        overlay.style.display = "none"; // Masquez l'overlay
+        modal.style.display = "none"; // Masquer la modal
+        overlay.style.display = "none"; // Masquer l'overlay
     }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    var categorySelector = document.getElementById('category_selector');
-    var formatSelector = document.getElementById('format_selector');
-    var dateOrder = document.getElementById('date_order');
+// On utilise les listes déroulantes comme filtres photos
+jQuery(document).ready(function ($) {
+    $('.filter-select').on('change', function () {
+        var category = $('#category_selector').val();
+        var format = $('#format_selector').val();
+        var date = $('#date_order').val();
 
-    if (categorySelector && formatSelector && dateOrder) {
-        categorySelector.addEventListener('change', function () {
-            handlePhotoDetails();
-        });
-
-        formatSelector.addEventListener('change', function () {
-            handlePhotoDetails();
-        });
-
-        dateOrder.addEventListener('change', function () {
-            handlePhotoDetails();
-        });
-    }
-
-    function handlePhotoDetails() {
-        var photoLink = document.querySelector('.photo-link');
-        if (photoLink) {
-            console.log('Photo link found:', photoLink);
-
-            var imageUrl = photoLink.getAttribute('href');
-            console.log('Image URL:', imageUrl);
-
-            // Requête Ajax pour récupérer les informations de la photo
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', ajax_object.ajax_url, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Ouvrir une nouvelle fenêtre et afficher les informations de la photo
-                    var newWindow = window.open('single-photo.php', '_blank');
-                    newWindow.document.write(xhr.responseText);
-                }
-            };
-
-            // Construire les données à envoyer
-            var data = 'action=get_photo_info&image_url=' + encodeURIComponent(imageUrl);
-            console.log('Ajax data:', data);
-
-            // Envoyer la requête Ajax
-            xhr.send(data);
-        } else {
-            console.log('Photo link not found.');
-        }
-    }
-
-    // Ajouter le code jQuery ici
-    $('.photo-link').on('click', function (e) {
-        e.preventDefault();
-
-        var imageUrl = $(this).attr('href');
-
+        // Effectuez la requête AJAX pour récupérer les photos filtrées
         $.ajax({
+            url: ajax_object.ajaxurl,
             type: 'POST',
-            url: ajax_object.ajax_url,
             data: {
-                action: 'get_photo_info',
-                image_url: imageUrl
+                action: 'get_filtered_photos',
+                category: category,
+                format: format,
+                date: date
             },
             success: function (response) {
-                var newWindow = window.open('single-photo.php', '_blank');
-                newWindow.document.write(response);
+                // Remplacez le contenu de .photo-content avec la réponse AJAX
+                $('.photo-content').replaceWith(response);
             },
             error: function (error) {
-                console.log('Erreur Ajax:', error);
+                console.log('Erreur AJAX:', error);
             }
         });
     });
-    
 });
 
+
+$(document).ready(function () {
+    $('#load-more').on('click', function () {
+        console.log('Load more button clicked');
+        var data = {
+            'action': 'load_more_photos',
+            'offset': offset,
+            'photos_to_load': photosToLoad,
+            'category_selector': '<?php echo esc_js($category_filter); ?>',
+            'format_selector': '<?php echo esc_js($format_filter); ?>',
+            'annee': '<?php echo esc_js($annee); ?>',
+            // ... autres données à passer ...
+        };
+
+        // Utiliser une requête AJAX pour charger plus de photos
+        $.ajax({
+            url: ajax_object.ajax_url, // Assurez-vous que cette ligne est correcte
+            data: data,
+            type: 'POST',
+            success: function (response) {
+                console.log('AJAX success:', response); // Ajoutez cette ligne pour vérifier la réponse AJAX
+                container.append(response);
+                offset += photosToLoad;
+            },
+            error: function (error) {
+                console.log('AJAX error:', error); // Ajoutez cette ligne pour vérifier les erreurs AJAX
+            }
+        });
+    });
+});
