@@ -57,7 +57,7 @@ function get_random_photo() {
     if ($query->have_posts()) {
         $query->the_post();
         $random_photo_url = get_the_post_thumbnail_url();
-        var_dump($random_photo_url); // Ajout pour le débogage
+       
         return $random_photo_url;
     }
 
@@ -195,5 +195,45 @@ register_taxonomy('format', 'photo', array(
 	'hierarchical' => false,
 
 ));
+add_action('wp_ajax_get_related_photos', 'get_related_photos');
+add_action('wp_ajax_nopriv_get_related_photos', 'get_related_photos');
+
+function get_related_photos() {
+    // Récupérer la catégorie actuelle depuis la requête AJAX
+    $current_category = $_POST['current_category'];
+
+    // Effectuer une requête WP_Query pour récupérer les photos de la même catégorie
+    $related_photos_query = new WP_Query(array(
+        'post_type' => 'photo',
+        'posts_per_page' => 1,
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'categorie',
+                'field' => 'id',
+                'terms' => $current_category,
+            ),
+        ),
+    ));
+
+    // Le HTML des photos
+    $output = '';
+
+    while ($related_photos_query->have_posts()) : $related_photos_query->the_post();
+        $output .= '<div class="carousel-item">';
+        $output .= '<a href="' . get_permalink() . '">';
+        $output .= get_the_post_thumbnail('thumbnail');
+        $output .= '</a>';
+        $output .= '</div>';
+    endwhile;
+
+    // Réinitialiser les données de publication
+    wp_reset_postdata();
+
+    // Envoyer le HTML en réponse AJAX
+    echo $output;
+
+    // Assurez-vous d'arrêter l'exécution après l'envoi de la réponse
+    wp_die();
+}
 
 

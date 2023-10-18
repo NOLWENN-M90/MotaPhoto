@@ -4,15 +4,13 @@
 <div class="bannerImage">
     <?php
     $random_photo_url = get_random_photo();
-    echo $random_photo_url;
-    if (!empty($random_photo_url)) {
+    if (!empty($random_photo_url)) :
     ?>
         <div>
-            <img class="banner"src="<?php echo esc_url($random_photo_url); ?>" alt="Photos aléatoire">
+            <img class="banner" src="<?php echo esc_url($random_photo_url); ?>" alt="Photos aléatoire">
         </div>
     <?php
-    } else {
-    }
+    endif;
     ?>
 
     <h1 class="negative-text">PHOTOGRAPHE EVENT</h1>

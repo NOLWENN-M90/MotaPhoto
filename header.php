@@ -7,7 +7,7 @@
     <title>NMOTA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
     
 
     <?php
