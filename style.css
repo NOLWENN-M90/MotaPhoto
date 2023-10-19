@@ -18,7 +18,7 @@ Theme Name: Mota thème
 }
 
 body {
-    margin:0;
+    margin: 0;
 
 }
 
@@ -210,6 +210,7 @@ input[type="submit" i] {
 .contenu {
     display: flex;
     width: 1148px;
+    height: 100%;
     flex-wrap: wrap;
     margin: auto;
 }
@@ -227,10 +228,16 @@ input[type="submit" i] {
 
 .photo-content img {
     width: 564px;
-    height: 495px;
-    margin-bottom: -10px;
+    height: 495px; 
+    margin-bottom: 10px;
     margin-right: 10px;
     object-fit: cover;
+}
+.photo-content{
+    width:auto;
+    height:auto;
+    margin-top: -20px;
+    
 }
 
 #category_selector,
@@ -265,7 +272,7 @@ input[type="submit" i] {
     background-color: #D8D8D8;
     font-family: 'Space Mono', monospace;
     border: none;
-    margin-left: 38%;
+    margin-left: 430px;
     cursor: pointer;
 }
 
@@ -336,25 +343,25 @@ input[type="submit" i] {
     display: flex;
     margin-top: 40px;
     margin-bottom: 20px;
-    width: 1440px;
-    margin-left: 70px;
-    font-weight: 300;
+    margin-left: 65px;
     font-family: 'Poppins', sans-serif;
 
 }
-
+.cont{
+    width:392px;
+}
 #bp .myBtn {
-    margin-left: 120px;
+    margin-left: 80px;
     cursor: pointer;
     border: none;
     background-color: #D8D8D8;
     Width: 272px;
     Height: 50px;
 }
-.tx{
-    width:250px;
-    margin-left: 20px;
 
+.tx {
+    padding-left: 27px;
+    margin-right: 42px;
 }
 
 #line {
@@ -376,20 +383,23 @@ input[type="submit" i] {
 .single-photo-content {
     margin-top: -30px;
     margin-left: 640px;
-    width: 81px;
-    
+
+
 }
-.single-photo-content img{
+
+.single-photo-content img {
     object-fit: cover;
     height: 71px;
     width: 81px;
-   
+
 }
-.single-photo-content img:hover{
+
+.single-photo-content img:hover {
     position: relative;
-    left:-201px;
-transform: scale(6);
+    left: -201px;
+    transform: scale(6);
 }
+
 .carousel-container {
 
     margin-top: 20px;
@@ -405,13 +415,15 @@ transform: scale(6);
 
 .carousel {
     display: flex;
-    width: 181px;
 
 }
 
+.carousel-item.active {
+    display: block;
+}
+
 .carousel-item {
-    min-width: 100%;
-    overflow: hidden;
+    display: none;
 }
 
 .carousel-arrow {
@@ -419,7 +431,6 @@ transform: scale(6);
     cursor: pointer;
     font-size: 24px;
     color: black;
-    z-index: 1;
 }
 
 .carousel-arrow-left {
@@ -430,20 +441,22 @@ transform: scale(6);
 .carousel-arrow-right {
     right: 10px;
 }
-.affiche{
+
+.affiche {
     width: 1440px;
     display: flex;
-    margin-right:70px;
-    margin-left:70px;
+    margin-right: 70px;
+    margin-left: 70px;
     justify-content: center;
-    
+
 }
-#show-all-photos{
-width:272px;
-height:50px;
-background-color:#D8D8D8;
-border-radius: 2px;
-cursor: pointer;
-border:none;
-font-family: 'Space Mono', monospace;
+
+#show-all-photos {
+    width: 272px;
+    height: 50px;
+    background-color: #D8D8D8;
+    border-radius: 2px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Space Mono', monospace;
 }

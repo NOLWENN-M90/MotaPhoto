@@ -22,7 +22,15 @@ function enqueue_custom_scripts() {
 
     // Enregistrer le script script.js
     wp_enqueue_script('script', get_template_directory_uri() . '/scripts/script.js', array('jquery'), '1.0', true);
+    
+    $current_category = get_queried_object();
 
+    // Initialise un tableau 
+    $script_data = array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'currentCategoryId' => $current_category ? $current_category->term_id : 0,
+    );
+    wp_localize_script('script', 'customScriptData', $script_data);
     // Passer la valeur de l'URL du fichier admin-ajax.php à votre script
     wp_localize_script('script', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
 }
@@ -43,7 +51,7 @@ function add_search_form2($items, $args)
 }
 add_filter('wp_nav_menu_items', 'add_search_form2', 10, 2);
 
-// On affiche une image de façon aléatoire dans la baanière à chaque actualisation
+// On affiche une image de façon aléatoire dans la banière à chaque actualisation
 function get_random_photo() {
 	
     $args = array(
@@ -87,7 +95,10 @@ function load_more_photos() {
     if ($query_photos->have_posts()) :
         while ($query_photos->have_posts()) :
             $query_photos->the_post();
-            
+            echo '<div class="photo">';
+            echo '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
+            echo '</div>';
+           
         endwhile;
     endif;
 
@@ -200,17 +211,17 @@ add_action('wp_ajax_nopriv_get_related_photos', 'get_related_photos');
 
 function get_related_photos() {
     // Récupérer la catégorie actuelle depuis la requête AJAX
-    $current_category = $_POST['current_category'];
+    $current_category = get_queried_object();
 
     // Effectuer une requête WP_Query pour récupérer les photos de la même catégorie
-    $related_photos_query = new WP_Query(array(
+    $related_photos = new WP_Query(array(
         'post_type' => 'photo',
         'posts_per_page' => 1,
         'tax_query' => array(
             array(
                 'taxonomy' => 'categorie',
                 'field' => 'id',
-                'terms' => $current_category,
+                'terms' => !empty($current_photo_category) ? $current_photo_category[0]->term_id : 0,
             ),
         ),
     ));
@@ -218,12 +229,8 @@ function get_related_photos() {
     // Le HTML des photos
     $output = '';
 
-    while ($related_photos_query->have_posts()) : $related_photos_query->the_post();
-        $output .= '<div class="carousel-item">';
-        $output .= '<a href="' . get_permalink() . '">';
-        $output .= get_the_post_thumbnail('thumbnail');
-        $output .= '</a>';
-        $output .= '</div>';
+    while ($related_photos->have_posts()) : $related_photos->the_post();
+
     endwhile;
 
     // Réinitialiser les données de publication
@@ -235,5 +242,4 @@ function get_related_photos() {
     // Assurez-vous d'arrêter l'exécution après l'envoi de la réponse
     wp_die();
 }
-
 

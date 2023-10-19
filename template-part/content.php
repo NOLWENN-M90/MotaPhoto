@@ -66,20 +66,24 @@
           'date' => $annee,
           'format' => $format,
         ),
-        get_permalink()
+        get_permalink(),
+        
       );
   ?>
       <div class="photo-content">
         <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
           <div class="photo">
-            <?php the_post_thumbnail(); ?>
+            <?php the_post_thumbnail(); 
+            ?>
           </div>
         </a>
 
       </div>
   <?php
     endwhile;
-    wp_reset_postdata();
   endif;
+  wp_reset_postdata();
   ?>
-    <button type="button" id="load-more">Charger plus</button>
+    <div>
+      <button type="button" id="load-more">Charger plus</button>
+    </div>
