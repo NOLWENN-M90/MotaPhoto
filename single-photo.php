@@ -142,7 +142,7 @@
                    ),
                ),
            ));
-       
+           
            // Affichez les photos
            while ($related_photos->have_posts()) : $related_photos->the_post();
                echo '<div class="photo-item">';
@@ -154,6 +154,8 @@
        
            // Réinitialisez les données de la requête principale de WordPress
            wp_reset_postdata();
+         
+          
        }
        ?>
 <button id="show-all-photos" >Toutes les photos</button>

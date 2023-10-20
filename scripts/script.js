@@ -29,9 +29,7 @@ jQuery(document).ready(function ($) {
     });
 
     // Variables nécessaires pour la requête AJAX et le chargement de photos
-    var offset = 8;
-    var photosToLoad = -1; 
-
+    
     // On utilise les listes déroulantes comme filtres photos
     $('.filter-select').on('change', function () {
         var category = $('#category_selector').val();
@@ -54,29 +52,45 @@ jQuery(document).ready(function ($) {
             }
         });
     });
+    var loading = false; // Variable pour empêcher le chargement multiple
 
-    $('#load-more').on('click', function () {
-        console.log('Load more button clicked');
-        var offset = $('.photo-content').find('.photo-thumbnail').length; 
-        var data = {
-            'action': 'load_more_photos',
-            'offset': offset,
-            'photos_to_load': photosToLoad,
-        };
-        $.ajax({
-            url: ajax_object.ajax_url,
-            data: data,
-            type: 'POST',
-            success: function (response) {
-                console.log('AJAX success:', response);
-                $('.photo-content').empty().append(response);
-                offset += photosToLoad;
-            },
-            error: function (error) {
-                console.log('AJAX error:', error);
-            }
-        });
+  $('#load-more').on('click', function () {
+    if (loading) return; // Si le chargement est déjà en cours, n'exécutez pas de nouveau
+
+    console.log('Load more button clicked');
+    loading = true; // Marquer le chargement en cours
+
+    var offset = $('.photo-content').not('.already-displayed').length;
+    var newPhotosToLoad = 8; // Le nombre de photos à charger à chaque clic
+
+    var data = {
+      'action': 'load_more_photos',
+      'offset': offset,
+      'photos_to_load': newPhotosToLoad,
+    };
+
+    $.ajax({
+      url: ajax_object.ajax_url,
+      data: data,
+      type: 'POST',
+      success: function (response) {
+        console.log('AJAX success:', response);
+        if (response.trim() !== '') {
+          $('.photo-content').last().after(response); // Ajoutez la réponse après la dernière div .photo-content
+          $('.photo-content.already-displayed').removeClass('already-displayed');
+          loading = false; // Marquer le chargement comme terminé
+        } else {
+          console.log('Aucune photo supplémentaire à charger.');
+          $('#load-more').prop('disabled', true);
+        }
+      },
+      error: function (error) {
+        console.log('AJAX error:', error);
+        loading = false; // Marquer le chargement comme terminé en cas d'erreur
+      }
     });
+  });
+
 
     // Lorsque la page est chargée
     $('#show-all-photos').on('click', function () {

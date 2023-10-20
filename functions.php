@@ -1,3 +1,4 @@
+
 <?php
 function montheme_supports()
 {
@@ -93,9 +94,10 @@ function load_more_photos() {
     $query_photos = new WP_Query($args);
 
     if ($query_photos->have_posts()) :
+        
         while ($query_photos->have_posts()) :
             $query_photos->the_post();
-            echo '<div class="photo">';
+            echo '<div class="photo-content">';
             echo '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
             echo '</div>';
            
@@ -226,18 +228,12 @@ function get_related_photos() {
         ),
     ));
 
-    // Le HTML des photos
-    $output = '';
-
     while ($related_photos->have_posts()) : $related_photos->the_post();
 
     endwhile;
 
     // Réinitialiser les données de publication
     wp_reset_postdata();
-
-    // Envoyer le HTML en réponse AJAX
-    echo $output;
 
     // Assurez-vous d'arrêter l'exécution après l'envoi de la réponse
     wp_die();

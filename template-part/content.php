@@ -1,9 +1,9 @@
-<div class="contenu">
+<div class="container">
   <div class="formulaire">
     <!-- Afficher les sélecteurs pour "catégories", "formats" et "date" -->
     <form method="get" action="<?php echo esc_url(home_url('/')); ?>" id="filter-form">
       <label for="category_selector"></label>
-      <select name="category_selector" id="category_selector"class="filter-select"data-type="category">
+      <select name="category_selector" id="category_selector" class="filter-select" data-type="category">
         <option value="">CATÉGORIES</option>
         <?php
         $categories = get_terms(array('taxonomy' => 'categorie', 'hide_empty' => false));
@@ -13,7 +13,7 @@
       </select>
 
       <label for="format_selector"></label>
-      <select name="format_selector" id="format_selector"class="filter-select"data-type="format">
+      <select name="format_selector" id="format_selector" class="filter-select" data-type="format">
         <option value="">FORMATS</option>
         <?php
         $formats = get_terms(array('taxonomy' => 'format', 'hide_empty' => false));
@@ -23,7 +23,7 @@
       </select>
 
       <label for="date_order"></label>
-      <select name="date_order" id="date_order"class="filter-select"data-type="date">
+      <select name="date_order" id="date_order" class="filter-select" data-type="date">
         <option value="">TRIER PAR</option>
         <option value="DESC">Du plus récent au plus ancien</option>
         <option value="ASC">Du plus ancien au plus récent</option>
@@ -35,7 +35,7 @@
   // Récupérer les valeurs des filtres
   $category_filter = isset($_GET['category_selector']) ? sanitize_text_field($_GET['category_selector']) : '';
   $format_filter = isset($_GET['format_selector']) ? sanitize_text_field($_GET['format_selector']) : '';
-  $annee = isset($_GET['annee']) ? sanitize_text_field($_GET['annee']) : '';
+  $annee = isset($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : 'ASC';
 
   // Afficher toutes les photos sur la page d'accueil
   $args_all_photos = array(
@@ -53,9 +53,10 @@
       $query_all_photos->the_post();
 
       $photo_id = get_the_ID();
+      
       $category = !empty(get_the_category()) ? esc_attr(get_the_category()[0]->name) : '';
       $type = esc_attr(get_post_meta($photo_id, 'type', true));
-      $annee = isset($_GET['annee']) ? sanitize_text_field($_GET['annee']) : '';
+      $annee = isset($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : '';
       $format = esc_attr(get_post_meta($photo_id, 'format', true));
 
       $link_url = add_query_arg(
@@ -66,24 +67,35 @@
           'date' => $annee,
           'format' => $format,
         ),
-        get_permalink(),
         
-      );
-  ?>
-      <div class="photo-content">
-        <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
-          <div class="photo">
-            <?php the_post_thumbnail(); 
-            ?>
-          </div>
-        </a>
+        get_permalink(),
 
+      );
+      
+  ?>
+     
+        <div class="photo-content already-displayed">
+          <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
+
+            <div class="overlay">
+              <?php the_post_thumbnail(); ?>
+              <div class="info-icon">
+                <i class="fa fa-eye"></i>
+              </div>
+              <div class="fullscreen-icon">
+                <i class="fa fa-expand"></i>
+              </div>
+            </div>
+
+          </a>
+        
       </div>
   <?php
     endwhile;
   endif;
   wp_reset_postdata();
+  echo the_post_thumbnail();
   ?>
-    <div>
-      <button type="button" id="load-more">Charger plus</button>
-    </div>
+  <div>
+    <button type="button" id="load-more">Charger plus</button>
+  </div>

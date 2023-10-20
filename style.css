@@ -207,18 +207,18 @@ input[type="submit" i] {
     box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
 }
 
-.contenu {
+.container {
     display: flex;
     width: 1148px;
     height: 100%;
-    flex-wrap: wrap;
     margin: auto;
+    flex-wrap: wrap;
 }
 
 .formulaire {
     width: 100%;
     height: 45px;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
     margin-top: 100px;
 }
 
@@ -226,18 +226,67 @@ input[type="submit" i] {
     color: #333;
 }
 
+.photo-content {
+    margin-top: -10px;
+    width: 564px;
+    height: 495px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
 .photo-content img {
     width: 564px;
-    height: 495px; 
-    margin-bottom: 10px;
+    height: 495px;
     margin-right: 10px;
     object-fit: cover;
 }
-.photo-content{
-    width:auto;
-    height:auto;
-    margin-top: -20px;
-    
+
+.photo-content:hover .overlay::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: auto;
+    width: 564px;
+    height: 495px;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    /* Permet aux icônes de rester interactives */
+}
+
+.photo-content:hover .overlay::before {
+    opacity: 1;
+}
+
+.info-icon {
+    position: absolute;
+    top: 50%;
+    left: 25%;
+}
+
+.fullscreen-icon {
+    position: absolute;
+    top: 50%;
+    right: 25%;
+}
+
+.info-icon,
+.fullscreen-icon {
+    color: #C4C4C4;
+    font-size: 30px;
+    transform: scale(1);
+    cursor: pointer;
+    pointer-events: auto;
+    /* Permet aux icônes d'être interactives */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.photo-content:hover .overlay .info-icon,
+.photo-content:hover .overlay .fullscreen-icon {
+    opacity: 1;
 }
 
 #category_selector,
@@ -347,9 +396,11 @@ input[type="submit" i] {
     font-family: 'Poppins', sans-serif;
 
 }
-.cont{
-    width:392px;
+
+.cont {
+    width: 392px;
 }
+
 #bp .myBtn {
     margin-left: 80px;
     cursor: pointer;
