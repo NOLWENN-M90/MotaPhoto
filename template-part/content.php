@@ -53,7 +53,7 @@
       $query_all_photos->the_post();
 
       $photo_id = get_the_ID();
-      
+
       $category = !empty(get_the_category()) ? esc_attr(get_the_category()[0]->name) : '';
       $type = esc_attr(get_post_meta($photo_id, 'type', true));
       $annee = isset($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : '';
@@ -67,28 +67,27 @@
           'date' => $annee,
           'format' => $format,
         ),
-        
+
         get_permalink(),
 
       );
-      
+
   ?>
-     
-        <div class="photo-content already-displayed">
-          <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
 
-            <div class="overlay">
-              <?php the_post_thumbnail(); ?>
-              <div class="info-icon">
-                <i class="fa fa-eye"></i>
-              </div>
-              <div class="fullscreen-icon">
-                <i class="fa fa-expand"></i>
-              </div>
+      <div class="photo-content already-displayed">
+        <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
+          <div class="overlay">
+            <?php the_post_thumbnail(); ?>
+            <div class="info-icon">
+              <i class="fa fa-eye"></i>
             </div>
+            <div class="fullscreen-icon">
+              <i class="fa fa-expand"></i>
+            </div>
+          </div>
 
-          </a>
-        
+        </a>
+
       </div>
   <?php
     endwhile;
@@ -99,3 +98,5 @@
   <div>
     <button type="button" id="load-more">Charger plus</button>
   </div>
+
+  

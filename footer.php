@@ -1,3 +1,4 @@
+</body>
 <div id="line-up"><hr></div>
 
 
@@ -10,7 +11,4 @@
         ]);
         ?>
     </nav>
-    <?php wp_footer() ?>
-    
-</body>
-</html>
+ </html>

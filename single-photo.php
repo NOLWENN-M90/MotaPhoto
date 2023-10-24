@@ -63,55 +63,28 @@
 
         </div>
         <?php
-        // ... (votre code PHP existant) ...
 
-        // Ouvrez la boucle WordPress pour afficher le contenu de la photo
         if (have_posts()) :
             while (have_posts()) : the_post();
         ?>
                 <div class="single-photo-content">
                     <?php the_content(); ?>
-                    <div class="carousel-wrapper">
-                        <div class="carousel">
-                             <?php
-                                    // Récupérer la catégorie de la photo actuelle
-                                    $current_photo_category = wp_get_post_terms(get_the_ID(), 'categorie');
-
-                                    // Récupérer les autres photos de la même catégorie
-                                    $related_photos = new WP_Query(array(
-                                        'post_type' => 'photo',
-                                        'posts_per_page' => 1,
-                                        'tax_query' => array(
-                                            array(
-                                                'taxonomy' => 'categorie',
-                                                'field' => 'id',
-                                                'terms' => !empty($current_photo_category) ? $current_photo_category[0]->term_id : 0,
-                                            ),
-                                        ),
-                                    ));
-
-                                    while ($related_photos->have_posts()) : $related_photos->the_post();
-                                    ?>
-                            <div class="carousel-item">
-                                <a href="<?php the_permalink(); ?>">
-                                    <?php echo get_the_post_thumbnail('thumbnail', 'smaller'); ?>
-                                </a>
-                            </div>
-                        <?php endwhile;
-                                    wp_reset_postdata();
-                        ?>
-
-                        <div class="carousel-arrow carousel-arrow-left" onclick="get_previous_post()">&#8249;</div>
-                        <div class="carousel-arrow carousel-arrow-right" onclick="get_next_post()">&#8250;</div>
+                    <div class="arrows">
+                    <a href=<?php get_previous_post_link() ?>>
+                        <div class="carousel-arrow-left">
+                        <img src="\wp-content\themes\mota-theme\assets\Line6.png">
                         </div>
+
+                    </a>
+                    <a href=<?php get_next_post_link() ?>>
+                        <div class="carousel-arrow-right">
+                        <img src="\wp-content\themes\mota-theme\assets\Line7.png">
+                        </div>
+
+                    </a>
                     </div>
                 </div>
-        <?php
-            endwhile;
-        endif;
-        ?>
-
-
+            <?php endwhile; ?>
     </div>
     <div>
         <div id="line">
@@ -121,46 +94,59 @@
         <div>
             <p class="p">VOUS AIMEREZ AUSSI</p>
         </div>
-        <div class='affiche'>
-       <?php
-       $current_category = get_queried_object();
+        <div class="affiche">
+        <?php
+            $current_photo_id = get_the_ID();
 
-       // Vérifiez si la catégorie actuelle est valide
-       if ($current_category) {
-           // Obtenez l'ID de la catégorie actuelle
-           $current_category_id = $current_category->term_id;
-       
-           // Effectuez une requête pour récupérer les photos du CPT avec la même catégorie
-           $related_photos = new WP_Query(array(
-               'post_type' => 'photo',
-               'posts_per_page' => -1, // Récupérer tous les posts
-               'tax_query' => array(
-                   array(
-                       'taxonomy' => 'categorie', // Nom de votre taxonomie
-                       'field' => 'id',
-                       'terms' => $current_category_id,
-                   ),
-               ),
-           ));
-           
-           // Affichez les photos
-           while ($related_photos->have_posts()) : $related_photos->the_post();
-               echo '<div class="photo-item">';
-               echo '<a href="' . get_permalink() . '">';
-               echo get_the_post_thumbnail('thumbnail', 'smaller');
-               echo '</a>';
-               echo '</div>';
-           endwhile;
-       
-           // Réinitialisez les données de la requête principale de WordPress
-           wp_reset_postdata();
-         
-          
-       }
-       ?>
-<button id="show-all-photos" >Toutes les photos</button>
+            // Obtenir les termes de la taxonomie 'categorie' de la photo actuelle
+            $terms_category = wp_get_post_terms($current_photo_id, 'categorie');
 
+            if (!empty($terms_category)) {
+                $current_category_id = $terms_category[0]->term_id;
+
+                // Effectue une requête pour récupérer les photos du CPT avec la même catégorie
+                $related_photos = new WP_Query(array(
+                    'post_type' => 'photo',
+                    'posts_per_page' => 3, // Récupère 3 posts (2 supplémentaires)
+                    'tax_query' => array(
+                        array(
+                            'taxonomy' => 'categorie',
+                            'field' => 'id',
+                            'terms' => $current_category_id,
+                        ),
+                    ),
+                ));
+
+                $count = 0;
+
+                // Affiche les photos
+                while ($related_photos->have_posts()) : $related_photos->the_post();
+
+                    if ($count < 2) { // Affiche seulement 2 photos supplémentaires
+                        echo '<div class="photo-content">';
+                        echo '<div class="overlay">';
+                        echo '<a href="' . get_permalink() . '">';
+                        echo get_the_post_thumbnail();
+                        echo '</a>';
+                        echo '</div>';
+                        echo '</div>';
+                        $count++;
+                    }
+
+                endwhile;
+
+                // Réinitialise les données de la requête principale de WordPress
+                wp_reset_query();
+            };
+        endif;
+        ?>
+        </div>
+        <div>
+            <button id="show-all-photos">Toutes les photos
+                <a href=""></a>
+            </button>
         </div>
     </div>
+
 </body>
 <?php get_footer(); ?>

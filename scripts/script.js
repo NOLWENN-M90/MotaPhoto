@@ -45,7 +45,7 @@ jQuery(document).ready(function ($) {
                 date: date
             },
             success: function (response) {
-                $('.photo-content').replaceWith(response);
+                $('.photo-content').html(response);
             },
             error: function (error) {
                 console.log('Erreur AJAX:', error);
@@ -90,65 +90,5 @@ jQuery(document).ready(function ($) {
       }
     });
   });
-
-
-    // Lorsque la page est chargée
-    $('#show-all-photos').on('click', function () {
-        console.log('Toutes les photos button clicked');
-        
-        var currentCategory = $related_photos();
-        if (currentCategory && currentCategory.term_id) {
-            // Utiliser l'identifiant de la catégorie actuelle
-            var currentCategoryId = currentCategory.term_id;
-
-            var data = {
-                'action': 'get_related_photos',
-                'current_category': currentCategoryId,
-            };
-            $.ajax({
-                url: ajax_object.ajax_url,
-                data: data,
-                type: 'POST',
-                success: function (response) {
-                    console.log('AJAX success:', response);
-                    var container = $('.affiche');
-                    console.log(container);
-                    container.append(response);
-                    currentSlide = 0;
-                    showSlide(currentSlide);
-                    offset += photosToLoad;
-                },
-                error: function (error) {
-                    console.log('AJAX error:', error);
-                }
-            });
-        };
-
-    });
+   
 });
-
-let currentSlide = 0;
-    const totalSlides = document.querySelectorAll('.carousel-item').length;
-
-    function showSlide(index) {
-        // Masquer toutes les diapositives
-        const slides = document.querySelectorAll('.carousel-item');
-        slides.forEach(slide => {
-            slide.classList.remove('active');
-        });
-
-        // Afficher la diapositive spécifiée
-        slides[index].classList.add('active');
-    }
-
-    function get_previous_post() {
-        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-        showSlide(currentSlide);
-        console.log('gauche ok');
-    }
-
-    function get_next_post() {
-        currentSlide = (currentSlide + 1) % totalSlides;
-        showSlide(currentSlide);
-        console.log('droite ok');
-    }
