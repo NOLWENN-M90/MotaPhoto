@@ -16,7 +16,8 @@
     ?>
 </head>
 
-<body>
+<body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
     <div class="background-overlay" id="backgroundOverlay"></div>
     <header>
         <nav role="navigation" aria-label="<?php _e('Menu principal', 'text-domain'); ?>">

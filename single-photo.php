@@ -70,19 +70,16 @@
                 <div class="single-photo-content">
                     <?php the_content(); ?>
                     <div class="arrows">
-                    <a href=<?php get_previous_post_link() ?>>
-                        <div class="carousel-arrow-left">
-                        <img src="\wp-content\themes\mota-theme\assets\Line6.png">
-                        </div>
-
-                    </a>
-                    <a href=<?php get_next_post_link() ?>>
-                        <div class="carousel-arrow-right">
-                        <img src="\wp-content\themes\mota-theme\assets\Line7.png">
-                        </div>
-
-                    </a>
+                        <a href="<?php echo esc_url(get_permalink(get_adjacent_post(false, '', true))); ?>">
+                            <img class="carousel-arrow-left" src="\wp-content\themes\mota-theme\assets\Line6.png" alt="Flèche gauche">
+                        </a>
+                        <a href="<?php echo esc_url(get_permalink(get_adjacent_post(false, '', false))); ?>">
+                            <img class="carousel-arrow-right" src="\wp-content\themes\mota-theme\assets\Line7.png" alt="Flèche droite">
+                        </a>
                     </div>
+                </div>
+                <div class="thumbnail-preview" style="display: none;">
+                    <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true))); ?>" alt="Thumbnail">
                 </div>
             <?php endwhile; ?>
     </div>
@@ -142,8 +139,8 @@
         ?>
         </div>
         <div>
-            <button id="show-all-photos">Toutes les photos
-                <a href=""></a>
+            <button id="show-all-photos">
+                <a href="<?php echo esc_url(home_url()); ?>">Toutes les photos</a>
             </button>
         </div>
     </div>

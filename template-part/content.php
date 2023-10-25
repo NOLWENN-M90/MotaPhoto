@@ -73,6 +73,14 @@
       );
 
   ?>
+  <?php
+    endwhile;
+  endif;
+  wp_reset_postdata();
+ 
+  ?>
+  <?php if ($query_all_photos->have_posts()) : ?>
+    <?php while ($query_all_photos->have_posts()) : $query_all_photos->the_post(); ?>
 
       <div class="photo-content already-displayed">
         <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
@@ -89,14 +97,9 @@
         </a>
 
       </div>
-  <?php
-    endwhile;
-  endif;
-  wp_reset_postdata();
-  echo the_post_thumbnail();
-  ?>
+    <?php endwhile; ?>
+  <?php endif; ?>
+  <?php wp_reset_postdata(); ?>
   <div>
     <button type="button" id="load-more">Charger plus</button>
   </div>
-
-  

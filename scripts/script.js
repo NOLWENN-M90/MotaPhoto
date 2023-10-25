@@ -45,7 +45,7 @@ jQuery(document).ready(function ($) {
                 date: date
             },
             success: function (response) {
-                $('.photo-content').html(response);
+                $('.photo-content').append(response).fadeIn();
             },
             error: function (error) {
                 console.log('Erreur AJAX:', error);
@@ -90,5 +90,44 @@ jQuery(document).ready(function ($) {
       }
     });
   });
-   
+  (function ($) {
+    $(document).ready(function () {
+        function showThumbnail(isPrevious) {
+            var thumbnailUrl = isPrevious ? getThumbnailUrl(true) : getThumbnailUrl(false);
+            var thumbnailPreview = $('.thumbnail-preview');
+
+            if (thumbnailUrl) {
+                thumbnailPreview.html('<img src="' + thumbnailUrl + '" alt="Thumbnail">');
+                thumbnailPreview.show();
+            } else {
+                thumbnailPreview.hide();
+            }
+        }
+
+        function getThumbnailUrl(isPrevious) {
+            var thumbnailUrl = ''; 
+            if (isPrevious) {
+                // Logique pour obtenir l'URL de la miniature précédente
+                // Affectez l'URL à la variable thumbnailUrl
+            } else {
+                // Logique pour obtenir l'URL de la miniature suivante
+                // Affectez l'URL à la variable thumbnailUrl
+            }
+            return thumbnailUrl;  // Renvoyez l'URL de la miniature
+        }
+
+        // Associez la fonction showThumbnail aux liens suivant/précédent
+        $('.carousel-arrow-left').on('mouseover', function () {
+            showThumbnail(true);
+        });
+
+        $('.carousel-arrow-right').on('mouseover', function () {
+            showThumbnail(false);
+        });
+    });
+})(jQuery);
+
+
+
+
 });

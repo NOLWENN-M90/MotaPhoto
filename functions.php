@@ -247,3 +247,4 @@ function get_related_photos()
 
 add_action('wp_ajax_get_related_photos', 'get_related_photos');
 add_action('wp_ajax_nopriv_get_related_photos', 'get_related_photos');
+

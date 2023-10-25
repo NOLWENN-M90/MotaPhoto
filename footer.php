@@ -1,3 +1,4 @@
+<?php wp_footer(); ?>
 </body>
 <div id="line-up"><hr></div>
 

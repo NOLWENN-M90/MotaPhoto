@@ -288,7 +288,7 @@ input[type="submit" i] {
 #category_selector,
 #format_selector,
 #date_order {
-
+cursor: pointer;
     font-weight: 500;
     width: 260px;
     height: 42px;
@@ -425,7 +425,11 @@ input[type="submit" i] {
     font-family: 'Space Mono', monospace;
     margin-left: 100px;
 }
-
+html :where(img[class*=wp-image-]){
+    height: 71px;
+    object-fit: cover;
+    max-width: 100%;
+}
 /* Carousel de la page single-photo */
 .single-photo-content {
     margin-top: -30px;
