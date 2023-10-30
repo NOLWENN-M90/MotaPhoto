@@ -67,7 +67,11 @@
         if (have_posts()) :
             while (have_posts()) : the_post();
         ?>
-                <div class="single-photo-content">
+                <?php
+                $prev_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true)));
+                $next_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', false)));
+                ?>
+                <div class="single-photo-content" data-prev-image="<?php echo $prev_image_url; ?>" data-next-image="<?php echo $next_image_url; ?>">
                     <?php the_content(); ?>
                     <div class="arrows">
                         <a href="<?php echo esc_url(get_permalink(get_adjacent_post(false, '', true))); ?>">
@@ -79,7 +83,7 @@
                     </div>
                 </div>
                 <div class="thumbnail-preview" style="display: none;">
-                    <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true))); ?>" alt="Thumbnail">
+                    <img src="<?php echo $prev_image_url; ?>" alt="Thumbnail">
                 </div>
             <?php endwhile; ?>
     </div>
@@ -121,11 +125,19 @@
 
                     if ($count < 2) { // Affiche seulement 2 photos supplémentaires
                         echo '<div class="photo-content">';
-                        echo '<div class="overlay">';
                         echo '<a href="' . get_permalink() . '">';
+                        echo '<div class="overlay">';
                         echo get_the_post_thumbnail();
-                        echo '</a>';
+                        echo '<div class="info-icon">';
+                        echo '<i class="fa fa-eye"></i>';
                         echo '</div>';
+                        echo '<div class="fullscreen-icon">';
+                        echo '<i class="fa fa-expand"></i>';
+                        echo '</div>';
+                        echo '<div class="overlay-content">';
+                        echo '</div>';
+                        echo '</div>';
+                        echo '</a>';
                         echo '</div>';
                         $count++;
                     }

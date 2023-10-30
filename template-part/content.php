@@ -77,29 +77,44 @@
     endwhile;
   endif;
   wp_reset_postdata();
- 
+
   ?>
   <?php if ($query_all_photos->have_posts()) : ?>
     <?php while ($query_all_photos->have_posts()) : $query_all_photos->the_post(); ?>
-
-      <div class="photo-content already-displayed">
-        <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
-          <div class="overlay">
-            <?php the_post_thumbnail(); ?>
-            <div class="info-icon">
-              <i class="fa fa-eye"></i>
+      <div class="content">
+        <div class="photo-content already-displayed">
+          <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
+            <div class="overlay">
+              <?php the_post_thumbnail(); ?>
+              <div class="info-icon">
+                <i class="fa fa-eye"></i>
+              </div>
+              <div class="fullscreen-icon">
+                <i class="fa fa-expand"></i>
+              </div>
+              <div class="overlay-content">
+                <p class="photo-reference"><?php echo get_field('reference'); ?></p>
+                <p class="photo-category">
+                  <?php
+                  $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
+                  if (!empty($terms_category)) {
+                    echo $terms_category[0]->name;
+                  }
+                  ?>
+                </p>
+              </div>
             </div>
-            <div class="fullscreen-icon">
-              <i class="fa fa-expand"></i>
-            </div>
-          </div>
 
-        </a>
+          </a>
 
+        </div>
+      <?php endwhile; ?>
+    <?php endif; ?>
+    <?php wp_reset_postdata(); ?>
       </div>
-    <?php endwhile; ?>
-  <?php endif; ?>
-  <?php wp_reset_postdata(); ?>
-  <div>
-    <button type="button" id="load-more">Charger plus</button>
-  </div>
+      
+      <div>
+        <button type="button" id="load-more">Charger plus</button>
+      </div>
+</div>
+      </body>

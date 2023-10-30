@@ -248,3 +248,17 @@ function get_related_photos()
 add_action('wp_ajax_get_related_photos', 'get_related_photos');
 add_action('wp_ajax_nopriv_get_related_photos', 'get_related_photos');
 
+function get_prev_next_image_urls() {
+    $prev_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true)));
+    $next_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', false)));
+
+    $image_urls = array(
+        'prev' => $prev_image_url,
+        'next' => $next_image_url,
+    );
+
+    wp_send_json($image_urls);
+}
+
+add_action('wp_ajax_get_prev_next_image_urls', 'get_prev_next_image_urls');
+add_action('wp_ajax_nopriv_get_prev_next_image_urls', 'get_prev_next_image_urls');

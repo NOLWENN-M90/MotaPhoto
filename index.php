@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-
+<body>
 <div class="bannerImage">
     <?php
     $random_photo_url = get_random_photo();
@@ -18,5 +18,5 @@
 
 <?php include_once "template-part/content.php"; ?>
 
-
+</body>
 <?php get_footer(); ?>
