@@ -31,20 +31,19 @@
                 'container'      => false // On retire le conteneur généré par WP
             ]);
             ?>
-            <button id="mobile-menu-toggle" class="mobile-menu-toggle">☰</button>
 
-            <div id="mobile" class="mobile__content">
-                <?php
-                wp_nav_menu([
-                    'theme_location' => 'header',
-                    'container'      => false
-                ]);
-                ?>
-            </div>
+            <button id="mobile-menu-toggle" class="mobile-menu-toggle">☰
+
+                <div id="mobile" class="mobile__content">
+                    <?php
+                    wp_nav_menu([
+                        'theme_location' => 'header',
+                        'container'      => false
+                    ]);
+                    ?>
+                </div>
+            </button>
         </nav>
         <?php include_once "template-part/contact.php"; ?>
-
-
-
 
     </header>

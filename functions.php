@@ -82,6 +82,7 @@ add_action('wp_ajax_nopriv_get_photo_info', 'get_photo_info_callback');
 // On fait appel à Ajax et pour le bouton de pagination de la page d'accueil
 function load_more_photos()
 {
+    $response = '';
     $offset = $_POST['offset'];
     $photos_to_load = $_POST['photos_to_load'];
 
@@ -90,21 +91,34 @@ function load_more_photos()
         'post_type' => 'photo',
         'posts_per_page' => $photos_to_load,
         'offset' => $offset,
-
     );
 
     $query_photos = new WP_Query($args);
 
-    if ($query_photos->have_posts()) :
-
-        while ($query_photos->have_posts()) :
+    if ($query_photos->have_posts()) {
+        while ($query_photos->have_posts()) {
             $query_photos->the_post();
-            echo '<div class="photo-content">';
-            echo '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
-            echo '</div>';
+            $response .= '<div class="photo-content">';
+            $response .= '<a href="' . esc_url(get_permalink()) . '" target="_blank" class="photo-link">';
+            $response .= '<div class="overlay">';
+            $response .= '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
+            $response .= '<div class="info-icon"><i class="fa fa-eye"></i></div>';
+            $response .= '<div class="fullscreen-icon"><i class="fa fa-expand"></i></div>';
+            $response .= '<div class="overlay-content">';
+            $response .= '<p class="photo-reference">' . get_field('reference') . '</p>';
+            $response .= '<p class="photo-category">';
+            
+            $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
+            if (!empty($terms_category)) {
+                $response .= $terms_category[0]->name;
+            }
+            
+            $response .= '</p></div></div></a></div>';
+        }
+    }
 
-        endwhile;
-    endif;
+    // Assurez-vous de renvoyer la réponse
+    echo $response;
 
     wp_reset_postdata();
 
@@ -169,7 +183,7 @@ function get_filtered_photos()
                 echo '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
                 echo '</div>';
             }
-            echo 'test';
+            
         } else {
             echo 'Aucune photo trouvée.';
         }
@@ -179,7 +193,7 @@ function get_filtered_photos()
         echo $output;
         wp_die();
     }
-    echo'test';
+    
 }
 add_action('wp_ajax_get_filtered_photos', 'get_filtered_photos');
 add_action('wp_ajax_nopriv_get_filtered_photos', 'get_filtered_photos');
@@ -262,3 +276,4 @@ function get_prev_next_image_urls() {
 
 add_action('wp_ajax_get_prev_next_image_urls', 'get_prev_next_image_urls');
 add_action('wp_ajax_nopriv_get_prev_next_image_urls', 'get_prev_next_image_urls');
+

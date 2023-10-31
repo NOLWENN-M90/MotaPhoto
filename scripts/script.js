@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
     // Sélectionnez le bouton "burger" et le menu
     var $toggleButton = $('#mobile-menu-toggle');
     var $mobileMenu = $('#mobile'); // Sélectionnez l'ID correct pour le menu mobile
-  
+
     // Gérez le clic sur le bouton "burger"
     $toggleButton.on('click', function () {
         $mobileMenu.toggleClass('active');// Affichez ou masquez le menu
@@ -87,7 +87,7 @@ jQuery(document).ready(function ($) {
         if (loading) return; // Si le chargement est déjà en cours, n'exécutez pas de nouveau
 
         console.log('Load more button clicked');
-        loading = true; // Marquer le chargement en cours
+        loading = true; // Marque le chargement en cours
 
         var offset = $('.photo-content').not('.already-displayed').length;
         var newPhotosToLoad = 8; // Le nombre de photos à charger à chaque clic
@@ -105,7 +105,23 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 console.log('AJAX success:', response);
                 if (response.trim() !== '') {
-                    $('.photo-content').last().after(response); // Ajoutez la réponse après la dernière div .photo-content
+                    $('.photo-content').last().after(response);
+
+                    // Active les éléments de l'overlay sur les nouvelles photos
+                    $('.photo-content.already-displayed .overlay').each(function () {
+                        var overlay = $(this);
+
+
+                        overlay.find('.info-icon i').on('click', function () {
+                            // Code pour gérer le clic sur l'icône d'info
+                        });
+
+                        overlay.find('.fullscreen-icon i').on('click', function () {
+                            // Code pour gérer le clic sur l'icône de plein écran
+                        });
+
+                    });
+
                     $('.photo-content.already-displayed').removeClass('already-displayed');
                     loading = false; // Marquer le chargement comme terminé
                 } else {
@@ -119,6 +135,7 @@ jQuery(document).ready(function ($) {
             }
         });
     });
+
     (function ($) {
         $(document).ready(function () {
             function showThumbnail(isPrevious) {
@@ -146,11 +163,11 @@ jQuery(document).ready(function ($) {
             }
 
             // Associez la fonction showThumbnail aux liens suivant/précédent
-            $('.carousel-arrow-left').on('mouseover', function () {
+            $('.carousel-arrow-left').on('hover', function () {
                 showThumbnail(true);
             });
 
-            $('.carousel-arrow-right').on('mouseover', function () {
+            $('.carousel-arrow-right').on('hover', function () {
                 showThumbnail(false);
             });
         });
