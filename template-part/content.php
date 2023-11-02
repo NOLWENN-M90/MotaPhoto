@@ -1,35 +1,37 @@
 <div class="container">
-  <div class="formulaire">
-    <!-- Afficher les sélecteurs pour "catégories", "formats" et "date" -->
+<div class="formulaire">
     <form method="get" action="<?php echo esc_url(home_url('/')); ?>" id="filter-form">
-      <label for="category_selector"></label>
-      <select name="category_selector" id="category_selector" class="filter-select" data-type="category">
-        <option value="">CATÉGORIES</option>
-        <?php
-        $categories = get_terms(array('taxonomy' => 'categorie', 'hide_empty' => false));
-        foreach ($categories as $category) : ?>
-          <option value="<?php echo esc_attr($category->slug); ?>"><?php echo esc_html($category->name); ?></option>
-        <?php endforeach; ?>
-      </select>
+        
+        <label for="category_selector"></label>
+        <select name="category_selector" id="category_selector" class="filter-select" data-type="category">
+            <option value="">CATÉGORIES</option>
+            <?php
+            $categories = get_terms(array('taxonomy' => 'categorie', 'hide_empty' => false));
+            foreach ($categories as $category) : ?>
+                <option value="<?php echo esc_attr($category->slug); ?>"><?php echo esc_html($category->name); ?></option>
+            <?php endforeach; ?>
+        </select>
 
-      <label for="format_selector"></label>
-      <select name="format_selector" id="format_selector" class="filter-select" data-type="format">
-        <option value="">FORMATS</option>
-        <?php
-        $formats = get_terms(array('taxonomy' => 'format', 'hide_empty' => false));
-        foreach ($formats as $format) : ?>
-          <option value="<?php echo esc_attr($format->slug); ?>"><?php echo esc_html($format->name); ?></option>
-        <?php endforeach; ?>
-      </select>
-
-      <label for="date_order"></label>
-      <select name="date_order" id="date_order" class="filter-select" data-type="date">
-        <option value="">TRIER PAR</option>
-        <option value="DESC">Du plus récent au plus ancien</option>
-        <option value="ASC">Du plus ancien au plus récent</option>
-      </select>
+        <label for="format_selector"></label>
+        <select name="format_selector" id="format_selector" class="filter-select" data-type="format">
+            <option value="">FORMATS</option>
+            <?php
+            $formats = get_terms(array('taxonomy' => 'format', 'hide_empty' => false));
+            foreach ($formats as $format) : ?>
+                <option value="<?php echo esc_attr($format->slug); ?>"><?php echo esc_html($format->name); ?></option>
+            <?php endforeach; ?>
+        </select>
+<div class="order_date">
+        <label for="date_order"></label>
+        <select name="date_order" id="date_order" class="filter-select" data-type="date">
+            <option value="">TRIER PAR</option>
+            <option value="DESC">Du plus récent au plus ancien</option>
+            <option value="ASC">Du plus ancien au plus récent</option>
+        </select>
+</div>
     </form>
-  </div>
+</div>
+
 
   <?php
   // Récupérer les valeurs des filtres
@@ -69,9 +71,10 @@
         ),
 
         get_permalink(),
-        
+
 
       );
+
 
   ?>
   <?php
@@ -82,32 +85,35 @@
   ?>
   <?php if ($query_all_photos->have_posts()) : ?>
     <?php while ($query_all_photos->have_posts()) : $query_all_photos->the_post(); ?>
-
-      <div class="photo-content already-displayed">
-        <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
-          <div class="overlay">
-            <?php the_post_thumbnail(); ?>
-            <div class="info-icon">
-              <i class="fa fa-eye"></i>
+      <div id="ajax-photos">
+        <div class="photo-content already-displayed">
+          <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
+            <div class="overlay">
+              <?php the_post_thumbnail(); ?>
+              <div class="info-icon">
+                <i class="fa fa-eye"></i>
+              </div>
+              <div class="fullscreen-icon">
+              <a data-src="<?php echo esc_url(wp_get_attachment_url(get_post_thumbnail_id())); ?>" class="photo-linka open-lightbox" data-fancybox="gallery" data-reference="<?php echo esc_attr(get_field('reference')); ?>" data-category="<?php echo esc_attr(get_field('category'));?>">
+                  <i class="fa fa-expand"></i>
+                </a>
+              </div>
+              <div class="overlay-content">
+                <p class="photo-reference"><?php echo get_field('reference'); ?></p>
+                <p class="photo-category">
+                  <?php
+                  $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
+                  if (!empty($terms_category)) {
+                    echo $terms_category[0]->name;
+                  }
+                  ?>
+                </p>
+              </div>
             </div>
-            <div class="fullscreen-icon">
-              <i class="fa fa-expand"></i>
-            </div>
-            <div class="overlay-content">
-              <p class="photo-reference"><?php echo get_field('reference'); ?></p>
-              <p class="photo-category">
-                <?php
-                $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
-                if (!empty($terms_category)) {
-                  echo $terms_category[0]->name;
-                }
-                ?>
-              </p>
-            </div>
-          </div>
 
-        </a>
+          </a>
 
+        </div>
       </div>
     <?php endwhile; ?>
   <?php endif; ?>

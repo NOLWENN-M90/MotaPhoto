@@ -70,6 +70,7 @@
                 <?php
                 $prev_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true)));
                 $next_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', false)));
+
                 ?>
                 <div class="single-photo-content" data-prev-image="<?php echo $prev_image_url; ?>" data-next-image="<?php echo $next_image_url; ?>">
                     <?php the_content(); ?>

@@ -21,6 +21,18 @@ function enqueue_custom_scripts()
     // Enregistre jQuery
     wp_enqueue_script('jquery');
 
+    // Enqueue Select2 CSS
+    wp_enqueue_style('select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
+
+    // Enqueue Select2 JS, dépendant de jQuery
+    wp_enqueue_script('select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), null, true);
+    // Enqueue Fancybox CSS
+    wp_enqueue_style('fancybox-css', 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css');
+
+    // Enqueue Fancybox JS, dépendant de jQuery
+    wp_enqueue_script('fancybox-js', 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js', array('jquery'), null, true);
+
+
     // Enregistre le script script.js
     wp_enqueue_script('script', get_template_directory_uri() . '/scripts/script.js', array('jquery'), '1.0', true);
 
@@ -29,16 +41,26 @@ function enqueue_custom_scripts()
     // Initialise un tableau 
     $script_data = array(
         'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('my_nonce'),
         'currentCategoryId' => $current_category ? $current_category->term_id : 0,
     );
+
     wp_localize_script('script', 'customScriptData', $script_data);
-    // Passe la valeur de l'URL du fichier admin-ajax.php à votre script
-    wp_localize_script('script', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
 }
 
-add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 
+add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 add_action('wp_enqueue_scripts', 'theme_enqueue_style');
+function select2_init()
+{
+    echo '
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $("select").select2(); // Initialise Select2 sur tous les éléments "select"
+        });
+    </script>';
+}
+add_action('wp_footer', 'select2_init', 30);
 
 // On intègre un bouton "Contact" au Menu en haut de page
 function add_search_form2($items, $args)
@@ -107,12 +129,12 @@ function load_more_photos()
             $response .= '<div class="overlay-content">';
             $response .= '<p class="photo-reference">' . get_field('reference') . '</p>';
             $response .= '<p class="photo-category">';
-            
+
             $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
             if (!empty($terms_category)) {
                 $response .= $terms_category[0]->name;
             }
-            
+
             $response .= '</p></div></div></a></div>';
         }
     }
@@ -131,72 +153,93 @@ add_action('wp_ajax_nopriv_load_more_photos', 'load_more_photos');
 // On ajoute une fonction query_photo et renvoyer les photos filtrées
 function get_filtered_photos()
 {
-    if (isset($_POST['action']) && $_POST['action'] == 'get_filtered_photos') {
-        $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
-        $format = isset($_POST['format']) ? sanitize_text_field($_POST['format']) : '';
-        $annee = isset($_POST['annee']) ? sanitize_text_field($_POST['annee']) : '';
-
-        // Initialise un tableau d'arguments pour WP_Query basé sur les filtres
-        $args = array(
-            'post_type' => 'photo',
-            'posts_per_page' => -1,
-            'tax_query' => array(),
-            'meta_query' => array(),
-        );
-
-        // Ajoute la taxonomie 'Catégorie' à la requête si une catégorie est sélectionnée
-        if ($category) {
-            $args['tax_query'][] = array(
-                'taxonomy' => 'categorie',
-                'field' => 'slug',
-                'terms' => $category,
-            );
-        }
-
-        // Ajoute la taxonomie 'Format' à la requête si un format est sélectionné
-        if ($format) {
-            $args['tax_query'][] = array(
-                'taxonomy' => 'format',
-                'field' => 'slug',
-                'terms' => $format,
-            );
-        }
-
-        // Ajoute un filtre basé sur le champ ACF 'Année' si une année est sélectionnée
-        if ($annee) {
-            $args['meta_query'][] = array(
-                'key' => 'annee',
-                'value' => $annee,
-                'compare' => '=',
-            );
-        }
-
-        // Utilise WP_Query pour obtenir les résultats
-        $query = new WP_Query($args);
-
-        ob_start();  // Commence la capture de la sortie
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                // Affiche chaque photo
-                echo '<div class="photo-content">';
-                echo '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
-                echo '</div>';
-            }
-            
-        } else {
-            echo 'Aucune photo trouvée.';
-        }
-        wp_reset_postdata();
-        $output = ob_get_clean();  // Récupère la sortie capturée
-
-        echo $output;
+    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'my_nonce')) {
+        echo 'Permission denied';
         wp_die();
     }
-    
+
+    $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
+    $format = isset($_POST['format']) ? sanitize_text_field($_POST['format']) : '';
+    $annee = isset($_POST['date']) ? sanitize_text_field($_POST['date']) : '';
+
+    // Initialise un tableau d'arguments pour WP_Query basé sur les filtres
+    $args = array(
+        'post_type' => 'photo',
+        'posts_per_page' => -1,
+        'tax_query' => array(),
+        'meta_query' => array(),
+    );
+
+    if ($category) {
+        $args['tax_query'][] = array(
+            'taxonomy' => 'categorie',
+            'field' => 'slug',
+            'terms' => $category,
+        );
+    }
+
+    if ($format) {
+        $args['tax_query'][] = array(
+            'taxonomy' => 'format',
+            'field' => 'slug',
+            'terms' => $format,
+        );
+    }
+
+    if ($annee) {
+        $args['meta_query'][] = array(
+            'key' => 'annee',
+            'value' => $annee,
+            'compare' => '=',
+        );
+    }
+
+    $query = new WP_Query($args);
+
+    ob_start();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            echo '<div class="photo-content">';
+            echo '<a href="' . esc_url(get_permalink()) . '" target="_blank" class="photo-link">';
+            echo '<div class="overlay">';
+            the_post_thumbnail();
+            echo '<div class="info-icon">';
+            echo '<i class="fa fa-eye"></i>';
+            echo '</div>';
+            echo '<div class="fullscreen-icon">';
+            echo '<a href="' . esc_url(get_permalink()) . '" class="photo-linka open-lightbox" data-reference="Référence de la photo" data-category="Catégorie de la photo" data-fancybox="gallery">';
+            echo '<i class="fa fa-expand"></i>';
+            echo '</a>';
+            echo '</div>';
+            echo '<div class="overlay-content">';
+            echo '<p class="photo-reference">' . get_field('reference') . '</p>';
+            echo '<p class="photo-category">';
+
+            $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
+            if (!empty($terms_category)) {
+                echo $terms_category[0]->name;
+            }
+
+            echo '</p>';
+            echo '</div>';
+            echo '</div>';
+            echo '</a>';
+            echo '</div>';
+        }
+    } else {
+        echo 'Aucune photo trouvée.';
+    }
+    wp_reset_postdata();
+
+    $output = ob_get_clean();
+    echo $output;
+    wp_die();
 }
+
 add_action('wp_ajax_get_filtered_photos', 'get_filtered_photos');
 add_action('wp_ajax_nopriv_get_filtered_photos', 'get_filtered_photos');
+
 
 
 function register_custom_post_type_photo()
@@ -243,7 +286,7 @@ function get_related_photos()
             array(
                 'taxonomy' => 'categorie',
                 'field' => 'id',
-                'terms' => $current_category ? $current_category:0,
+                'terms' => $current_category ? $current_category : 0,
             ),
         ),
     ));
@@ -262,7 +305,8 @@ function get_related_photos()
 add_action('wp_ajax_get_related_photos', 'get_related_photos');
 add_action('wp_ajax_nopriv_get_related_photos', 'get_related_photos');
 
-function get_prev_next_image_urls() {
+function get_prev_next_image_urls()
+{
     $prev_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true)));
     $next_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', false)));
 
