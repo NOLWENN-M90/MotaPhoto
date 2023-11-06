@@ -20,26 +20,27 @@
     <div class="background-overlay" id="backgroundOverlay"></div>
     <header>
 
-        <nav role="navigation" aria-label="<?php _e('Menu principal', 'text-domain'); ?>">
-            <img class="logo" src="/wp-content/themes/mota-theme/assets/NathalieMota.png" alt="logo">
+        <img class="logo" src="/wp-content/themes/mota-theme/assets/NathalieMota.png" alt="logo">
+        <nav role="navigation" aria-label="<?php _e('Menu principal', 'text-domain'); ?>" class="menu-desktop">
             <?php
             wp_nav_menu([
                 'theme_location' => 'header',
-                'container'      => false // On retire le conteneur généré par WP
+                'container'      => false,
+                'menu_class'     => 'desktop-menu', 
             ]);
             ?>
+        </nav>
 
-            <button id="mobile-menu-toggle" class="mobile-menu-toggle">☰
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle">☰</button>
 
-                <div id="mobile" class="mobile__content">
-                    <?php
-                    wp_nav_menu([
-                        'theme_location' => 'header',
-                        'container'      => false
-                    ]);
-                    ?>
-                </div>
-            </button>
+        <nav id="mobile-menu" class="mobile-menu" aria-label="<?php _e('Menu mobile', 'text-domain'); ?>">
+            <?php
+            wp_nav_menu([
+                'theme_location' => 'header',
+                'container'      => false,
+                'menu_class'     => 'mobile-menu', 
+            ]);
+            ?>
         </nav>
         <?php include_once "template-part/contact.php"; ?>
 

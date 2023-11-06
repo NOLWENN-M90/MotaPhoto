@@ -1,36 +1,36 @@
 <div class="container">
-<div class="formulaire">
-    <form method="get" action="<?php echo esc_url(home_url('/')); ?>" id="filter-form">
-        
-        <label for="category_selector"></label>
-        <select name="category_selector" id="category_selector" class="filter-select" data-type="category">
-            <option value="">CATÉGORIES</option>
-            <?php
-            $categories = get_terms(array('taxonomy' => 'categorie', 'hide_empty' => false));
-            foreach ($categories as $category) : ?>
-                <option value="<?php echo esc_attr($category->slug); ?>"><?php echo esc_html($category->name); ?></option>
-            <?php endforeach; ?>
-        </select>
+  <div class="formulaire">
+    <form method="get" action="<?php echo esc_url(home_url('/')); ?>" id="filter-form" class="forma">
 
-        <label for="format_selector"></label>
-        <select name="format_selector" id="format_selector" class="filter-select" data-type="format">
-            <option value="">FORMATS</option>
-            <?php
-            $formats = get_terms(array('taxonomy' => 'format', 'hide_empty' => false));
-            foreach ($formats as $format) : ?>
-                <option value="<?php echo esc_attr($format->slug); ?>"><?php echo esc_html($format->name); ?></option>
-            <?php endforeach; ?>
-        </select>
-<div class="order_date">
+      <label for="category_selector"></label>
+      <select name="category_selector" id="category_selector" class="filter-select" data-type="category">
+        <option value="">CATÉGORIES</option>
+        <?php
+        $categories = get_terms(array('taxonomy' => 'categorie', 'hide_empty' => false));
+        foreach ($categories as $category) : ?>
+          <option value="<?php echo esc_attr($category->slug); ?>"><?php echo esc_html($category->name); ?></option>
+        <?php endforeach; ?>
+      </select>
+
+      <label for="format_selector"></label>
+      <select name="format_selector" id="format_selector" class="filter-select" data-type="format">
+        <option value="">FORMATS</option>
+        <?php
+        $formats = get_terms(array('taxonomy' => 'format', 'hide_empty' => false));
+        foreach ($formats as $format) : ?>
+          <option value="<?php echo esc_attr($format->slug); ?>"><?php echo esc_html($format->name); ?></option>
+        <?php endforeach; ?>
+      </select>
+      <div class="order_date">
         <label for="date_order"></label>
         <select name="date_order" id="date_order" class="filter-select" data-type="date">
-            <option value="">TRIER PAR</option>
-            <option value="DESC">Du plus récent au plus ancien</option>
-            <option value="ASC">Du plus ancien au plus récent</option>
+          <option value="">TRIER PAR</option>
+          <option value="DESC">Du plus récent au plus ancien</option>
+          <option value="ASC">Du plus ancien au plus récent</option>
         </select>
-</div>
+      </div>
     </form>
-</div>
+  </div>
 
 
   <?php
@@ -94,8 +94,13 @@
                 <i class="fa fa-eye"></i>
               </div>
               <div class="fullscreen-icon">
-              <a data-src="<?php echo esc_url(wp_get_attachment_url(get_post_thumbnail_id())); ?>" class="photo-linka open-lightbox" data-fancybox="gallery" data-reference="<?php echo esc_attr(get_field('reference')); ?>" data-category="<?php echo esc_attr(get_field('category'));?>">
-                  <i class="fa fa-expand"></i>
+                <?php
+                $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
+                $category_name = !empty($terms_category) ? esc_attr($terms_category[0]->name) : '';
+                $image_full = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
+                ?>
+                <a data-src="<?php echo esc_url($image_full[0]); ?>" class="photo-linka" data-reference="<?php echo esc_attr(get_field('reference')); ?>" data-category="<?php echo esc_attr($category_name); ?>">
+                  <i class="fa fa-expand thumbnail" data-tooltip="Plein écran"></i>
                 </a>
               </div>
               <div class="overlay-content">
@@ -118,8 +123,7 @@
     <?php endwhile; ?>
   <?php endif; ?>
   <?php wp_reset_postdata(); ?>
+
   <div>
     <button type="button" id="load-more">Charger plus</button>
   </div>
-
-  </body>

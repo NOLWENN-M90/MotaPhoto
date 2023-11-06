@@ -14,6 +14,7 @@ add_action('after_setup_theme', 'montheme_supports');
 function theme_enqueue_style()
 {
     wp_enqueue_style('mota-theme', get_template_directory_uri() . '/style.css');
+   
 }
 
 function enqueue_custom_scripts()
@@ -26,13 +27,7 @@ function enqueue_custom_scripts()
 
     // Enqueue Select2 JS, dépendant de jQuery
     wp_enqueue_script('select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), null, true);
-    // Enqueue Fancybox CSS
-    wp_enqueue_style('fancybox-css', 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css');
-
-    // Enqueue Fancybox JS, dépendant de jQuery
-    wp_enqueue_script('fancybox-js', 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js', array('jquery'), null, true);
-
-
+    
     // Enregistre le script script.js
     wp_enqueue_script('script', get_template_directory_uri() . '/scripts/script.js', array('jquery'), '1.0', true);
 
@@ -89,7 +84,6 @@ function get_random_photo()
     if ($query->have_posts()) {
         $query->the_post();
         $random_photo_url = get_the_post_thumbnail_url();
-
         return $random_photo_url;
     }
 
@@ -98,8 +92,10 @@ function get_random_photo()
 }
 
 // Fonction Ajax pour récupérer les informations de la photo
-add_action('wp_ajax_get_photo_info', 'get_photo_info_callback');
-add_action('wp_ajax_nopriv_get_photo_info', 'get_photo_info_callback');
+add_action('wp_ajax_get_photo_info', 'get_random_photo');
+add_action('wp_ajax_nopriv_get_photo_info', 'get_random_photo');
+
+
 
 // On fait appel à Ajax et pour le bouton de pagination de la page d'accueil
 function load_more_photos()
@@ -200,38 +196,36 @@ function get_filtered_photos()
     if ($query->have_posts()) {
         while ($query->have_posts()) {
             $query->the_post();
+            $reference = get_field('reference'); // Obtenez la référence de la photo
+            $terms_category = wp_get_post_terms(get_the_ID(), 'categorie'); // Obtenez les termes de la catégorie
+            $category_name = !empty($terms_category) ? $terms_category[0]->name : ''; // Assurez-vous qu'il y a des termes de catégorie
             echo '<div class="photo-content">';
+            // Le lien vers la page détaillée de la photo
             echo '<a href="' . esc_url(get_permalink()) . '" target="_blank" class="photo-link">';
             echo '<div class="overlay">';
             the_post_thumbnail();
             echo '<div class="info-icon">';
             echo '<i class="fa fa-eye"></i>';
             echo '</div>';
+            echo '</div>'; // Ferme .overlay ici, car le reste n'est pas censé être lié à la page de détail
+            echo '</a>'; // Ferme le premier <a> ici
+            // L'icône d'agrandissement pour la lightbox
             echo '<div class="fullscreen-icon">';
-            echo '<a href="' . esc_url(get_permalink()) . '" class="photo-linka open-lightbox" data-reference="Référence de la photo" data-category="Catégorie de la photo" data-fancybox="gallery">';
+            echo '<a href="' . esc_url(get_the_post_thumbnail_url()) . '" class="photo-linka" data-reference="' . esc_attr($reference) . '" data-category="' . esc_attr($category_name) . '">';
             echo '<i class="fa fa-expand"></i>';
             echo '</a>';
             echo '</div>';
             echo '<div class="overlay-content">';
-            echo '<p class="photo-reference">' . get_field('reference') . '</p>';
-            echo '<p class="photo-category">';
-
-            $terms_category = wp_get_post_terms(get_the_ID(), 'categorie');
-            if (!empty($terms_category)) {
-                echo $terms_category[0]->name;
-            }
-
-            echo '</p>';
-            echo '</div>';
-            echo '</div>';
-            echo '</a>';
-            echo '</div>';
+            echo '<p class="photo-reference">' . esc_html($reference) . '</p>';
+            echo '<p class="photo-category">' . esc_html($category_name) . '</p>';
+            echo '</div>'; // .overlay-content
+            echo '</div>'; // .photo-content
         }
     } else {
         echo 'Aucune photo trouvée.';
     }
     wp_reset_postdata();
-
+    
     $output = ob_get_clean();
     echo $output;
     wp_die();
@@ -271,40 +265,6 @@ register_taxonomy('format', 'photo', array(
 
 ));
 
-
-function get_related_photos()
-{
-    // Récupère la catégorie actuelle depuis la requête AJAX
-    $current_category = $_POST['offset'];
-    $photos_to_load = $_POST['photos_to_load'];
-
-    // Effectue une requête WP_Query pour récupérer les photos de la même catégorie
-    $related_photos = new WP_Query(array(
-        'post_type' => 'photo',
-        'posts_per_page' => $photos_to_load,
-        'tax_query' => array(
-            array(
-                'taxonomy' => 'categorie',
-                'field' => 'id',
-                'terms' => $current_category ? $current_category : 0,
-            ),
-        ),
-    ));
-
-    while ($related_photos->have_posts()) : $related_photos->the_post();
-
-    endwhile;
-
-    // Réinitialise les données de publication
-    wp_reset_postdata();
-
-    //arrête l'exécution après l'envoi de la réponse
-    wp_die();
-}
-
-add_action('wp_ajax_get_related_photos', 'get_related_photos');
-add_action('wp_ajax_nopriv_get_related_photos', 'get_related_photos');
-
 function get_prev_next_image_urls()
 {
     $prev_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true)));
@@ -320,4 +280,3 @@ function get_prev_next_image_urls()
 
 add_action('wp_ajax_get_prev_next_image_urls', 'get_prev_next_image_urls');
 add_action('wp_ajax_nopriv_get_prev_next_image_urls', 'get_prev_next_image_urls');
-

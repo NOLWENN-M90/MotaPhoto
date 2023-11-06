@@ -22,6 +22,12 @@ body {
 
 }
 
+header {
+    justify-content: space-between;
+    width: 1448px;
+    display: flex;
+}
+
 a:hover {
     font-weight: 600;
 }
@@ -41,9 +47,9 @@ a:hover {
 }
 
 nav {
-    padding-left: 150px;
-    height:72px;
-    padding-right: 105px;
+
+    height: 72px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -55,7 +61,6 @@ nav ul {
 
     list-style-type: none;
     display: flex;
-    width: 400px;
 
 }
 
@@ -66,15 +71,18 @@ nav ul {
     border: none;
     cursor: pointer;
 }
-#mobile{
+
+#mobile {
     display: none;
 }
+
 .myBtn:hover {
     font-weight: 600;
 }
 
 .logo {
-    float: left;
+    object-fit: contain;
+    margin-left: 70px;
 
 }
 
@@ -109,13 +117,26 @@ nav ul {
 
 }
 
-.mobile-menu-toggle {
+.mobile-menu {
     display: none;
-    /* Masquez le bouton sur les écrans non mobiles */
+}
+
+#mobile-menu-toggle {
+    display: none;
 }
 
 @media (max-width: 768px) {
-    .mobile-menu-toggle {
+    .menu-desktop {
+        display: none;
+    }
+
+    #mobile-menu.is-active {
+        display: block;
+        position: absolute;
+        /* autres styles pour le menu mobile ici */
+    }
+
+    #mobile-menu-toggle {
         display: block;
         background-color: white;
         position: relative;
@@ -143,38 +164,41 @@ nav ul {
     }
 
     nav {
-        margin-left: -130px!important;
+        margin-left: -130px !important;
     }
 
     .mobile__content.active {
         display: block;
         /* Affichez le menu mobile lorsque la classe 'active' est ajoutée */
     }
-    .modal-content{
+
+    .modal-content {
         position: relative;
         margin-left: 15px;
         left: -120px;
-        padding-left: 10px!important;
+        padding-left: 10px !important;
         max-width: 270px;
         height: 600px;
     }
-    .modal-content img{
-        max-width: 280px!important;
-        left:-90px!important;
+
+    .modal-content img {
+        max-width: 280px !important;
+        left: -90px !important;
         margin-left: 80px;
         padding-right: 10px;
     }
-    
-    input{
-        margin-left:-5px!important;
+
+    input {
+        margin-left: -5px !important;
     }
+
     .photo-content {
         width: 317px !important;
         height: 278px !important;
     }
 
     .photo-content img {
-        width: 317px!important;
+        width: 317px !important;
         margin-left: 35px;
         margin-bottom: -190px;
     }
@@ -195,71 +219,82 @@ nav ul {
 
     #bp {
         padding-top: 20px !important;
-    
+
         flex-wrap: wrap;
     }
 
     .myBtn {
+        display: none;
         position: relative;
         top: 50px;
         right: 255px;
     }
-    #bp .myBtn{
-        margin-left:-600px!important;
+
+    #bp .myBtn {
+        margin-left: -600px !important;
     }
+
     #line-down {
-        width: 317px!important;
+        width: 317px !important;
         margin: 0;
         padding-left: 0 !important;
     }
-    #line{
-        width: 317px!important;
-        margin-top: 80px!important;
-        margin-left: -60px!important;
-        
-        
+
+    #line {
+        width: 317px !important;
+        margin-top: 80px !important;
+        margin-left: -60px !important;
+
+
     }
-    .single-photo-content{
-        display:none;
+
+    .single-photo-content {
+        display: none;
     }
-    .p{
-        margin-top:30px!important;
-        margin-left: 80px!important;
+
+    .p {
+        margin-top: 30px !important;
+        margin-left: 80px !important;
     }
-    .affiche{
+
+    .affiche {
         flex-wrap: wrap;
         flex-direction: column;
-        width: 844px!important;
+        width: 844px !important;
     }
-    #show-all-photos{
-        margin-left: 20px!important;
+
+    #show-all-photos {
+        margin-left: 20px !important;
     }
+
     .footer {
         display: flex;
         width: 317px;
         flex-wrap: wrap;
-        margin-left: -200px!important;
+        margin-left: -200px !important;
         flex-direction: column;
     }
+
     #menu-footer {
         flex-wrap: wrap;
-        width: 317px!important;
-        margin-left: 30px!important;
-        margin-top: 10px!important;
+        width: 317px !important;
+        margin-left: 30px !important;
+        margin-top: 10px !important;
         flex-direction: column;
     }
+
     #menu-footer li {
         display: flex;
         margin-top: 20px;
         width: 317px;
         justify-content: center;
     }
+
     .menu {
         display: none;
-       
+
     }
 }
-
 
 /* The Modal (background) */
 .modal {
@@ -362,7 +397,7 @@ input[type="submit"] {
     box-shadow: 0px 2px 1px 0px rgba(0, 0, 0, 0.02);
 }
 
-.container{
+.container {
     display: flex;
     width: 1148px;
     height: 100%;
@@ -370,13 +405,15 @@ input[type="submit"] {
     justify-content: space-between;
     flex-wrap: wrap;
 }
-#ajax-photos{
+
+#ajax-photos {
 
     height: 100%;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
+
 .formulaire {
     width: 100%;
     height: 45px;
@@ -394,7 +431,7 @@ input[type="submit"] {
     margin-bottom: 20px;
     margin-top: 20px;
     position: relative;
-  
+
 }
 
 .photo-content img {
@@ -407,7 +444,7 @@ input[type="submit"] {
     width: 100%;
     height: 100%;
     position: absolute;
-   
+
 }
 
 .overlay::before {
@@ -441,28 +478,29 @@ input[type="submit"] {
 
 .fullscreen-icon {
     position: absolute;
-    background-color: black;
-    width: 25px;
-    height: 25px;
     border-radius: 50%;
     top: 20px;
-    right: 20px;
+    right: 30px;
     cursor: pointer;
     pointer-events: auto;
     opacity: 0;
     transition: opacity 0.3s;
     z-index: 2;
 }
-.fullscreen-icon .fa{
-color: white;
-position: relative;
-right: 34px;
-top: 5px;
-}
 
+.fullscreen-icon .fa {
+    color: white;
+    position: relative;
+
+}
+#lightbox-overlay p{
+    font-family:'Poppins', sans-serif !important;
+}
 .overlay-content {
     position: absolute;
     display: flex;
+    width: 100%;
+    justify-content: flex-start;
     bottom: 20px;
     left: 20px;
     /* Positionné dans le coin inférieur gauche */
@@ -476,12 +514,14 @@ top: 5px;
 
 .photo-content:hover .overlay::before {
     opacity: 1;
+  
 }
 
 .photo-content:hover .info-icon,
 .photo-content:hover .fullscreen-icon,
 .photo-content:hover .overlay-content {
     opacity: 1;
+    font-family: 'SpaceMono', sans-serif!important;
 }
 
 .photo-reference,
@@ -494,58 +534,73 @@ top: 5px;
 .photo-category {
     margin-left: 400px;
 }
-form {
-    display: flex;
 
-    gap: 0px; /* Pour ajouter un espace entre les éléments */
+.forma {
+    display: flex;
+    gap: 0px;
+    /* Pour ajouter un espace entre les éléments */
 }
 
 .filter-select {
-   
-    padding: 10px!important;
-    width: 260px!important; 
-    border: 1px solid hsl(0, 0%, 80%)!important;
-    border-radius: 8px!important;
-    background-color: #fff!important; 
-    cursor: pointer!important;
-    appearance: none; 
-    -webkit-appearance: none; 
-    -moz-appearance: none; 
-    font-size: 16px!important; 
+
+    padding: 10px !important;
+    width: 260px !important;
+    border: 1px solid hsl(0, 0%, 80%) !important;
+    border-radius: 8px !important;
+    background-color: #fff !important;
+    cursor: pointer !important;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 16px !important;
 }
-.select2-container--default .select2-selection--single{
-    font-family: 'Poppins', sans-serif!important;
+
+.select2-container--default .select2-selection--single {
+    font-family: 'Poppins', sans-serif !important;
     height: 42px;
     padding: 8px 5px 5px 8px;
     border: 1px solid #aaa;
     border-radius: 8px;
 }
-.select2-container--default .select2-selection--single .select2-selection__arrow b{
-    top:80%
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    top: 80%
 }
-#select2-data-5-kwhy{
-    margin-left:150px;
+
+#select2-data-5-kwhy {
+    margin-left: 150px;
 }
-.select2-container{
+
+.select2-container {
     margin-right: 20px;
 }
-.select2-results__option--selectable:hover{
-    background-color: red!important;
-    color: white!important;
+
+.select2-results__option--selectable:hover {
+
+    background-color: red !important;
+    color: white !important;
 }
+
+.select2-results__option--selectable {
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: transparent;
+}
+
 #category_selector {
-    margin-right: 20px!important;
+    margin-right: 20px !important;
 }
 
 .order_date {
-    margin-left: 300px!important;
+    margin-left: 300px !important;
     position: relative;
     left: 25px;
 }
 
-.fancybox-navigation .fancybox-button--arrow_left , .fancybox-navigation .fancybox-button--arrow_right{
-    background: transparent;
-}
+
 /* bouton "charger plus" */
 
 #load-more {
@@ -597,36 +652,20 @@ form {
 }
 
 /* Lightbox */
-.lightbox-caption {
-    display: flex;
-    justify-content: flex-start;
-    position: relative;
-    text-transform:uppercase;
-    top: 500px;
-    left: 20px;
-    z-index: 1;
-}
-
-.lightbox-content {
+.fullscreen-icon .fa-expand:hover::after {
+    content: attr(data-tooltip);
     position: absolute;
-    top: 50%;
+    top: -30px;
     left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-}
-.fancybox-navigation .fancybox-button--arrow_left svg, 
-.fancybox-navigation .fancybox-button--arrow_right svg {
-    fill: #000; /* Changez ceci à une couleur de votre choix */
-}
-
-.close {
-    position: absolute;
-    right: 10px;
-    font-size: 30px;
-    cursor: pointer;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
 }
 
 .titre h2 {
@@ -719,8 +758,8 @@ html :where(img[class*=wp-image-]) {
 
 .arrows {
     display: flex;
-    width: 81px;
-    margin-left: 10px;
+    margin-left: 17px;
+    margin-top: -15px;
 }
 
 .carousel-arrow-left {

@@ -29,20 +29,14 @@ jQuery(document).ready(function ($) {
     });
 
     // Sélectionnez le bouton "burger" et le menu
-    var $toggleButton = $('#mobile-menu-toggle');
-    var $mobileMenu = $('#mobile'); // Sélectionnez l'ID correct pour le menu mobile
+    var mobileToggle = document.getElementById('mobile-menu-toggle');
+    var mobileMenu = document.getElementById('mobile-menu');
 
     // Gérez le clic sur le bouton "burger"
-    $toggleButton.on('click', function () {
-        $mobileMenu.toggleClass('active');// Affichez ou masquez le menu
+    mobileToggle.addEventListener('click', function () {
+        mobileMenu.classList.toggle('is-active');
     });
-
-
     // Variables nécessaires pour la requête AJAX et le chargement de photos
-
-    var loading = false; // Variable pour empêcher le chargement multiple
-
-    // On utilise les listes déroulantes comme filtres photos
     $('.filter-select').on('change', function () {
         var category = $('#category_selector').val();
         var format = $('#format_selector').val();
@@ -87,9 +81,6 @@ jQuery(document).ready(function ($) {
         });
     });
 
-    var loading = false; // Variable pour empêcher le chargement multiple
-
-
     $('#load-more').on('click', function () {
         if (loading) return; // Si le chargement est déjà en cours, n'exécute pas de nouveau
 
@@ -112,10 +103,11 @@ jQuery(document).ready(function ($) {
             success: function (response) {
                 console.log('AJAX success:', response);
                 if (response.trim() !== '') {
+                    $('.ajax-photos').html(response);
                     $('.photo-content').last().after(response);
 
                     // Active les éléments de l'overlay sur les nouvelles photos
-                    $('.photo-content.already-displayed .overlay').each(function () {
+                    $('.photo-content .already-displayed .overlay').each(function () {
                         var overlay = $(this);
 
 
@@ -142,72 +134,125 @@ jQuery(document).ready(function ($) {
             }
         });
     });
-    $('.open-lightbox').on('click', function (e) {
-        e.preventDefault();
+    var loading = false; // Variable pour empêcher le chargement multiple
+    var currentIndex = 0; // Variable pour garder une trace de l'index de l'image actuelle
 
-        console.log('Lightbox opened');  // Pour vérifier que l'événement est déclenché
-
-        console.log($(this).data('src')); // Vérifiez le chemin de l'image
-        console.log($(this).data('reference')); // Vérifiez la référence
-        console.log($(this).data('category')); // Vérifiez la catégorie
-
-        $.fancybox.open({
-            src: $(this).data('src'),
-            type: 'image',
-            opts: {
-                buttons: [
-                    'slideShow',
-                    'fullScreen',
-                    'thumbs',
-                    'close'
-                ],
-                afterLoad: function (instance, current) {
-                    console.log('After Load triggered');  // Pour vérifier que l'événement afterLoad est déclenché
-                    var ref = $(e.target).data('reference') || '';  // Pour éviter undefined
-                    var cat = $(e.target).data('category') || '';   // Pour éviter undefined
-                    var caption = '<div class="lightbox-caption"><p class="photo-reference">' + ref + '</p><p class="photo-category">' + cat + '</p></div>';
-                    $(current.$content[0]).parent().append(caption);
-                }
-            }
+    function updateLightboxImage(index) {
+        // Assurer que l'index reste dans la plage des images disponibles
+        if (index >= btns.length) index = 0;
+        if (index < 0) index = btns.length - 1;
+    
+        // Mettre à jour l'image dans la lightbox directement
+        var newImageSrc = btns[index].getAttribute('data-image-src'); // Supposant que chaque .myBtn a un attribut data-image-src
+        $('#lightbox-image').attr('src', newImageSrc);
+        currentIndex = index; // Mettre à jour l'index courant
+    }
+    
+    // Fonction pour configurer la navigation de la lightbox une seule fois
+    function setupLightboxNavigation() {
+        $('#lightbox-overlay .prev-button').on('click', function (e) {
+            e.stopPropagation();
+            updateLightboxImage(currentIndex - 1);
         });
+    
+        $('#lightbox-overlay .next-button').on('click', function (e) {
+            e.stopPropagation();
+            updateLightboxImage(currentIndex + 1);
+        });
+    }
+    function openLightbox(image, category, reference) {
+        var that = this;
+        
+        setupLightboxNavigation();
+        // Création de l'overlay de la lightbox
+        var overlay = $('<div id="lightbox-overlay"></div>').css({
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
+        }).appendTo('body');
+
+        // Création de l'image en plein écran
+        var lightboxImage = $('<img>').attr('src', image.attr('src')).css({
+            maxWidth: '80%',
+            maxHeight: '80%',
+            margin: 'auto'
+        }).appendTo(overlay);
+
+        // Ajout des détails de l'image
+        var imageDetails = $('<div></div>').css({
+            position: 'absolute',
+            'text-transform': 'uppercase',
+            'justify-content': 'space-around',
+            'bottom': '5%',
+            'width': '100%',
+            'display': 'flex',
+            'color': 'rgb(255, 255, 255)',
+            'font-family': 'Poppins',
+            'text-align': 'center'
+        }).html('<p>' + reference + '</p>' +
+            '<p>' + category + '</p>').appendTo(overlay);
+
+        // Ajout des boutons de navigation
+        var prevButton = $('<button>←</button>').css({
+            position: 'absolute',
+            top: '50%',
+            left: '10%',
+            transform: 'translateY(-50%)',
+            zIndex: 1001,
+            'background-color': 'transparent',
+            'color':'white',
+            'border':'none',
+            'font-size':'20px',
+            'cursor':'pointer'
+        }).html('<span class="arrow" style="font-size: 24px;">&larr;</span> <span class="text" style="font-size: 16px;">Précédente</span>')
+        .on('click', function () {
+            that.showImage(that.currentIndex - 1);
+        }).appendTo(overlay);
+
+        var nextButton = $('<button>→</button>').css({
+            position: 'absolute',
+            top: '50%',
+            right: '10%',
+            transform: 'translateY(-50%)',
+            zIndex: 1001,
+            'background-color': 'transparent',
+            'color':'white',
+            'border':'none',
+            'font-size':'20px',
+            'cursor':'pointer'
+        }).html('<span class="text" style="font-size: 16px;">Suivante</span> <span class="arrow" style="font-size: 24px;">&rarr;</span>')
+        .on('click', function () {
+            that.showImage(that.currentIndex + 1);
+        }).appendTo(overlay);
+
+        // Fermeture de la lightbox en cliquant sur l'overlay
+        overlay.on('click', function (e) {
+            if (e.target !== this) return;
+            overlay.remove();
+        });
+       
+    }
+
+    // Gestion du clic sur l'icône d'agrandissement
+    $('.fullscreen-icon i').on('click', function () {
+        var $icon = $(this);
+        var image = $icon.closest('.photo-content').find('img');
+        
+        // Récupération des données de l'élément cliqué
+        var category = $icon.closest('.photo-linka').data('category');
+        var reference = $icon.closest('.photo-linka').data('reference');
+        
+        // Ouverture de la lightbox avec les données récupérées
+        openLightbox(image, category, reference);
+        
     });
-
-
-
-    (function ($) {
-        $(document).ready(function () {
-
-            function showLightboxWithImage(imageUrl) {
-                if (imageUrl) {
-                    $.fancybox.open({
-                        src: imageUrl,
-                        type: 'image',
-                        opts: {
-                            afterLoad: function (instance, current) {
-                                console.log('Lightbox avec image chargée');
-                            }
-                        }
-                    });
-                }
-            }
-
-            function getThumbnailUrl(isPrevious) {
-                var contentDiv = $('.single-photo-content');
-                return isPrevious ? contentDiv.data('prev-image') : contentDiv.data('next-image');
-            }
-
-            $('.carousel-arrow-left').on('mouseover', function () {
-                var thumbnailUrl = getThumbnailUrl(true);
-                showLightboxWithImage(thumbnailUrl);
-            });
-
-            $('.carousel-arrow-right').on('mouseover', function () {
-                var thumbnailUrl = getThumbnailUrl(false);
-                showLightboxWithImage(thumbnailUrl);
-            });
-
-        });
-    })(jQuery);
-
+   
 
 });
