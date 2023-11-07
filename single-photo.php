@@ -5,7 +5,8 @@
 
 while (have_posts()) : the_post();
 ?>
-    <div class="photo-details">
+    <div class="container" style="height: 844px; padding-top: 30px;
+    text-transform: uppercase; margin-top:0px;">
         <div class="titre">
             <h2><?php the_title() ?></h2>
             <div class="list">
@@ -94,10 +95,7 @@ endwhile;
                 $prev_terms_category = wp_get_post_terms($prev_post->ID, 'categorie');
                 $prev_category = !empty($prev_terms_category) ? $prev_terms_category[0]->name : '';
             } else {
-                // Gérer le cas où il n'y a pas de post précédent
-                $prev_image_url = ''; // Ou définir une valeur par défaut
-                $prev_reference = '';
-                $prev_category = '';
+                
             }
 
             $next_post = get_adjacent_post(false, '', false);
@@ -107,10 +105,7 @@ endwhile;
                 $next_terms_category = wp_get_post_terms($next_post->ID, 'categorie');
                 $next_category = !empty($next_terms_category) ? $next_terms_category[0]->name : '';
             } else {
-                // Gérer le cas où il n'y a pas de post suivant
-                $next_image_url = ''; // Ou définir une valeur par défaut
-                $next_reference = '';
-                $next_category = '';
+                
             }
             ?>
             <div class="single-photo-content " data-prev-image="<?php echo $prev_image_url; ?>" data-next-image="<?php echo $next_image_url; ?>" data-prev-reference="<?php echo esc_attr($prev_reference); ?>" data-next-reference="<?php echo esc_attr($next_reference); ?>" data-prev-category="<?php echo esc_attr($prev_category); ?>" data-next-category="<?php echo esc_attr($next_category); ?>">

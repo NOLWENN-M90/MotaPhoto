@@ -32,60 +32,56 @@
     </form>
   </div>
 
+  <div id="filtered-photos">
+    <?php
+    // Récupérer les valeurs des filtres
+    $category_filter = isset($_GET['category_selector']) ? sanitize_text_field($_GET['category_selector']) : '';
+    $format_filter = isset($_GET['format_selector']) ? sanitize_text_field($_GET['format_selector']) : '';
+    $annee_order = isset($_GET['date_order']) && !empty($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : null;
+    // Afficher toutes les photos sur la page d'accueil
+    $args_all_photos = array(
+      'post_type' => 'photo',
+      'posts_per_page' => 8,
+      'orderby' => 'meta_value_num', // Tri par la valeur du champ personnalisé
+      'meta_key' => 'annee',  // Clé du champ personnalisé "annee"
 
-  <?php
-  // Récupérer les valeurs des filtres
-  $category_filter = isset($_GET['category_selector']) ? sanitize_text_field($_GET['category_selector']) : '';
-  $format_filter = isset($_GET['format_selector']) ? sanitize_text_field($_GET['format_selector']) : '';
-  $annee = isset($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : 'ASC';
+    );
+    // Si un ordre est défini, ajoutez le tri par année
+    if ($annee_order) {
+      $args_all_photos['orderby'] = 'meta_value_num';
+      $args_all_photos['meta_key'] = 'annee';
+      $args_all_photos['order'] = $annee_order;
+    }
+    $query_all_photos = new WP_Query($args_all_photos);
 
-  // Afficher toutes les photos sur la page d'accueil
-  $args_all_photos = array(
-    'post_type' => 'photo',
-    'posts_per_page' => 8,
-    'orderby' => 'meta_value', // Tri par la valeur du champ personnalisé
-    'meta_key' => 'date',  // Clé du champ personnalisé "date"
-    'order' => $annee,
-  );
+    if ($query_all_photos->have_posts()) :
 
-  $query_all_photos = new WP_Query($args_all_photos);
+      while ($query_all_photos->have_posts()) :
+        $query_all_photos->the_post();
 
-  if ($query_all_photos->have_posts()) :
-    while ($query_all_photos->have_posts()) :
-      $query_all_photos->the_post();
+        $photo_id = get_the_ID();
 
-      $photo_id = get_the_ID();
+        $category = !empty(get_the_category()) ? esc_attr(get_the_category()[0]->name) : '';
+        $type = esc_attr(get_post_meta($photo_id, 'type', true));
+        $annee = isset($_GET['date']) ? sanitize_text_field($_GET['date']) : '';
+        $format = esc_attr(get_post_meta($photo_id, 'format', true));
 
-      $category = !empty(get_the_category()) ? esc_attr(get_the_category()[0]->name) : '';
-      $type = esc_attr(get_post_meta($photo_id, 'type', true));
-      $annee = isset($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : '';
-      $format = esc_attr(get_post_meta($photo_id, 'format', true));
+        $link_url = add_query_arg(
+          array(
+            'id' => $photo_id,
+            'category' => $category,
+            'type' => $type,
+            'date' => $annee,
+            'format' => $format,
+          ),
 
-      $link_url = add_query_arg(
-        array(
-          'id' => $photo_id,
-          'category' => $category,
-          'type' => $type,
-          'date' => $annee,
-          'format' => $format,
-        ),
-
-        get_permalink(),
+          get_permalink(),
 
 
-      );
+        );
 
 
-  ?>
-  <?php
-    endwhile;
-  endif;
-  wp_reset_postdata();
-
-  ?>
-  <?php if ($query_all_photos->have_posts()) : ?>
-    <?php while ($query_all_photos->have_posts()) : $query_all_photos->the_post(); ?>
-      <div id="ajax-photos">
+    ?>
         <div class="photo-content already-displayed">
           <a href="<?php echo esc_url(get_permalink()) ?>" target="_blank" class="photo-link">
             <div class="overlay">
@@ -119,11 +115,14 @@
           </a>
 
         </div>
-      </div>
-    <?php endwhile; ?>
-  <?php endif; ?>
-  <?php wp_reset_postdata(); ?>
+      <?php endwhile; ?>
+    <?php endif; ?>
+    <?php wp_reset_postdata(); ?>
+
+  </div>
+  <div id="loaded-photos"></div>
 
   <div>
     <button type="button" id="load-more">Charger plus</button>
   </div>
+</div>

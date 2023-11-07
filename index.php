@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
 
-<div class="bannerImage">
+<div>
     <?php
     $random_photo_url = get_random_photo();
     if (!empty($random_photo_url)) :
@@ -18,5 +18,5 @@
 
 <?php include_once "template-part/content.php"; ?>
 
-
+</body>
 <?php get_footer(); ?>
