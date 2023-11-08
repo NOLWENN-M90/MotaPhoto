@@ -79,16 +79,24 @@ function select2_init()
 add_action('wp_footer', 'select2_init', 30);
 
 // On intègre un bouton "Contact" au Menu en haut de page
-function add_search_form2($items, $args)
-{
+function add_search_form2($items, $args) {
     if ($args->theme_location == 'header') {
-        $items .= '<button class="myBtn">CONTACT</button>';
-    } else {
+        // Vérifiez si nous sommes sur une page de photo individuelle.
+        if (is_singular('photo')) { // Remplacez 'photo' par le nom réel du type de publication si différent.
+            // Obtenez la référence de la photo actuelle.
+            $reference = get_field('reference');
+            // Ajoutez la référence de la photo au bouton.
+            $items .= '<button class="myBtn" data-reference="' . esc_attr($reference) . '">CONTACT</button>';
+        } else {
+            // Si ce n'est pas une page de photo individuelle, ajoutez le bouton sans la référence.
+            $items .= '<button class="myBtn">CONTACT</button>';
+        }
     }
 
     return $items;
 }
 add_filter('wp_nav_menu_items', 'add_search_form2', 10, 2);
+
 
 // On affiche une image de façon aléatoire dans la banière à chaque actualisation
 function get_random_photo()
@@ -130,6 +138,7 @@ function load_more_photos()
         'post_type' => 'photo',
         'posts_per_page' => $photos_to_load,
         'offset' => $offset,
+        'orderby'        => 'rand',
     );
 
     $query_photos = new WP_Query($args);

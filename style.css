@@ -319,10 +319,10 @@ nav ul {
 }
 
 .modal-content img {
-    left: -210px;
+    left: -191px;
     top: -50px;
     position: relative;
-    width: 690px;
+    width: 670px;
 }
 
 /* The Close Button */
@@ -588,7 +588,6 @@ nav ul {
 
 /* Lightbox */
 .fullscreen-icon .fa-expand:hover::after {
-    content: attr(data-tooltip);
     position: absolute;
     top: -30px;
     left: 50%;
@@ -602,7 +601,12 @@ nav ul {
     white-space: nowrap;
     z-index: 10;
 }
-
+[data-tooltip]:hover:after {
+    content: attr(data-tooltip);
+    position: absolute;
+    z-index: 1000;
+  
+  }
 .titre h2 {
     width: 320px;
     font-size: 66px;
@@ -631,7 +635,13 @@ nav ul {
     margin-bottom: -10px;
 
 }
-
+.wpcf7-form-control.wpcf7-text.wpcf7-validates-as-required{
+    height: 40px;
+    border-radius: 8px;
+}
+.wpcf7-form-control.wpcf7-textarea{
+    border-radius: 8px;
+}
 #bp {
     display: flex;
     justify-content: space-between;

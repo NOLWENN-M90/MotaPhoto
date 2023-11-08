@@ -96,7 +96,7 @@
                 $image_full = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
                 ?>
                 <a data-src="<?php echo esc_url($image_full[0]); ?>" class="photo-linka" data-reference="<?php echo esc_attr(get_field('reference')); ?>" data-category="<?php echo esc_attr($category_name); ?>">
-                  <i class="fa fa-expand thumbnail" data-tooltip="Plein écran"></i>
+                  <i class="fa fa-expand" data-tooltip="Plein écran"></i>
                 </a>
               </div>
               <div class="overlay-content">

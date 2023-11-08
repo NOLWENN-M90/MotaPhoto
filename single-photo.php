@@ -51,28 +51,15 @@ while (have_posts()) : the_post();
         </div>
         <div class="thumbnail open-lightbox">
             <?php
+            // Lien caché vers l'image principale pour la lightbox
             $main_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
-            echo '<a href="' . esc_url($main_image_url) . '" style="display: none;"></a>'; // Ajoute l'image principale à la galerie mais la cache
+            echo '<a href="' . esc_url($main_image_url) . '" style="display: none;"></a>';
+            // Affichage de l'image principale
             echo get_the_post_thumbnail(get_the_ID(), 'full');
             ?>
         </div>
-
-        <?php
-        $all_photos = new WP_Query(array('post_type' => 'photo', 'posts_per_page' => -1));
-        while ($all_photos->have_posts()) : $all_photos->the_post();
-            $image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
-            $reference = get_field('reference');
-            $category = wp_get_post_terms(get_the_ID(), 'categorie');
-            $category_name = !empty($category) ? $category[0]->name : '';
-            echo '<a href="' . esc_url($image_url) . '" data-reference="' . esc_attr($reference) . '" data-category="' . esc_attr($category_name) . '" style="display: none;"></a>';
-        endwhile;
-        wp_reset_postdata(); ?>
-
     </div>
-
-<?php
-endwhile;
-?>
+<?php endwhile; ?>
 
 <div id="bp">
     <div>
@@ -89,39 +76,30 @@ endwhile;
     ?>
             <?php
             $prev_post = get_adjacent_post(false, '', true);
-            if ($prev_post) {
-                $prev_image_url = esc_url(get_the_post_thumbnail_url($prev_post->ID));
-                $prev_reference = get_field('reference', $prev_post->ID);
-                $prev_terms_category = wp_get_post_terms($prev_post->ID, 'categorie');
-                $prev_category = !empty($prev_terms_category) ? $prev_terms_category[0]->name : '';
-            } else {
-                
-            }
+            $next_post = get_adjacent_post(false, '', true);
 
-            $next_post = get_adjacent_post(false, '', false);
-            if ($next_post) {
-                $next_image_url = esc_url(get_the_post_thumbnail_url($next_post->ID));
-                $next_reference = get_field('reference', $next_post->ID);
-                $next_terms_category = wp_get_post_terms($next_post->ID, 'categorie');
-                $next_category = !empty($next_terms_category) ? $next_terms_category[0]->name : '';
-            } else {
-                
-            }
+            // Préparation des URL et des données pour la lightbox
+            $prev_image_url = $prev_post ? esc_url(get_the_post_thumbnail_url($prev_post->ID)) : '';
+            $next_image_url = $next_post ? esc_url(get_the_post_thumbnail_url($next_post->ID)) : '';
             ?>
             <div class="single-photo-content " data-prev-image="<?php echo $prev_image_url; ?>" data-next-image="<?php echo $next_image_url; ?>" data-prev-reference="<?php echo esc_attr($prev_reference); ?>" data-next-reference="<?php echo esc_attr($next_reference); ?>" data-prev-category="<?php echo esc_attr($prev_category); ?>" data-next-category="<?php echo esc_attr($next_category); ?>">
                 <?php the_content(); ?>
                 <div class="arrows">
-                    <a href="<?php echo esc_url($prev_image_url); ?>"class="preview-arrow thumbnail" data-reference="<?php echo esc_attr($prev_reference); ?>" data-category="<?php echo esc_attr($prev_category); ?>">
-                    <span class="carousel-arrow-left left-arrow">←</span>
-                    </a>
-                    <a href="<?php echo esc_url($next_image_url); ?>"  class="preview-arrow thumbnail" data-reference="<?php echo esc_attr($next_reference); ?>" data-category="<?php echo esc_attr($next_category); ?>">
-                    <span class="carousel-arrow-right right-arrow">→</span>
-                    </a>
+                    <?php if ($prev_post) : ?>
+                        <a href="<?php echo $prev_image_url; ?>" class="preview-arrow thumbnail" data-reference="<?php echo esc_attr(get_field('reference', $prev_post->ID)); ?>" data-category="<?php echo esc_attr(wp_get_post_terms($prev_post->ID, 'categorie')[0]->name); ?>">
+                            <span class="carousel-arrow-left left-arrow">←</span>
+                        </a>
+                    <?php endif; ?>
+                    <!-- Flèche droite pour l'image suivante -->
+                    <?php if ($next_post) : ?>
+                        <a href="<?php echo $next_image_url; ?>" class="preview-arrow thumbnail" data-reference="<?php echo esc_attr(get_field('reference', $next_post->ID)); ?>" data-category="<?php echo esc_attr(wp_get_post_terms($next_post->ID, 'categorie')[0]->name); ?>">
+                            <span class="carousel-arrow-right right-arrow">→</span>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
-</div>
 
-<?php endwhile; ?>
+        <?php endwhile; ?>
 </div>
 <div>
     <div id="line">
