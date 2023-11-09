@@ -41,8 +41,29 @@ function enqueue_custom_scripts()
     );
 
     wp_localize_script('script', 'customScriptData', $script_data);
+    enqueue_photo_data();
 }
-
+function enqueue_photo_data() {
+    $args = array(
+        'post_type' => 'photo',
+        'posts_per_page' => -1, // Get all photos
+        'fields' => 'ids', // Only get photo IDs to reduce load
+    );
+    $photo_query = new WP_Query($args);
+    $photos = array();
+    if ($photo_query->posts) {
+        foreach ($photo_query->posts as $photo_id) {
+            $photos[] = array(
+                'id' => $photo_id,
+                'src' => get_the_post_thumbnail_url($photo_id),
+                'category' => wp_get_post_terms($photo_id, 'categorie')[0]->name ?? '',
+                'reference' => get_field('reference', $photo_id),
+            );
+        }
+    }
+    // Localize photo data for use in JavaScript
+    wp_localize_script('script', 'photosData', $photos);
+}
 
 add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
 add_action('wp_enqueue_scripts', 'theme_enqueue_style');
@@ -58,16 +79,24 @@ function select2_init()
 add_action('wp_footer', 'select2_init', 30);
 
 // On intègre un bouton "Contact" au Menu en haut de page
-function add_search_form2($items, $args)
-{
+function add_search_form2($items, $args) {
     if ($args->theme_location == 'header') {
-        $items .= '<button class="myBtn">CONTACT</button>';
-    } else {
+        // Vérifie si nous sommes sur une page de photo individuelle.
+        if (is_singular('photo')) { 
+            // Obtient la référence de la photo actuelle.
+            $reference = get_field('reference');
+            // Ajoute la référence de la photo au bouton.
+            $items .= '<button class="myBtn" data-reference="' . esc_attr($reference) . '">CONTACT</button>';
+        } else {
+            // Si ce n'est pas une page de photo individuelle, ajoutez le bouton sans la référence.
+            $items .= '<button class="myBtn">CONTACT</button>';
+        }
     }
 
     return $items;
 }
 add_filter('wp_nav_menu_items', 'add_search_form2', 10, 2);
+
 
 // On affiche une image de façon aléatoire dans la banière à chaque actualisation
 function get_random_photo()
@@ -212,7 +241,7 @@ function get_filtered_photos()
             // L'icône d'agrandissement pour la lightbox
             echo '<div class="fullscreen-icon">';
             echo '<a href="' . esc_url(get_the_post_thumbnail_url()) . '" class="photo-linka" data-reference="' . esc_attr($reference) . '" data-category="' . esc_attr($category_name) . '">';
-            echo '<i class="fa fa-expand"></i>';
+            echo '<i class="fa fa-expand"data-tooltip="Plein écran"></i>';
             echo '</a>';
             echo '</div>';
             echo '<div class="overlay-content">';
@@ -264,19 +293,6 @@ register_taxonomy('format', 'photo', array(
     'hierarchical' => false,
 
 ));
+add_action('init', 'register_custom_post_type_photo');
 
-function get_prev_next_image_urls()
-{
-    $prev_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', true)));
-    $next_image_url = esc_url(get_the_post_thumbnail_url(get_adjacent_post(false, '', false)));
 
-    $image_urls = array(
-        'prev' => $prev_image_url,
-        'next' => $next_image_url,
-    );
-
-    wp_send_json($image_urls);
-}
-
-add_action('wp_ajax_get_prev_next_image_urls', 'get_prev_next_image_urls');
-add_action('wp_ajax_nopriv_get_prev_next_image_urls', 'get_prev_next_image_urls');
