@@ -246,7 +246,7 @@
                     updateAllPhotosData(); // Mise à jour des données pour la navigation dans la lightbox
                     reattachEventHandlersForNewElements();
                     reinitSelect2ForNewElements();
-                    attachPreviewArrowEvents();
+
                     attachFullScreenIconEvents();
                     loading = false;
                 },
