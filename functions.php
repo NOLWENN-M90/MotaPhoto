@@ -150,7 +150,7 @@ function load_more_photos()
             $response .= '<div class="overlay">';
             $response .= '<img src="' . esc_url(get_the_post_thumbnail_url()) . '" alt="' . '">';
             $response .= '<div class="info-icon"><i class="fa fa-eye"></i></div>';
-            $response .= '<div class="fullscreen-icon"><i class="fa fa-expand"></i></div>';
+            $response .= '<div class="fullscreen-icon"><i class="fa fa-expand"data-tooltip="Plein écran"></i></div>';
             $response .= '<div class="overlay-content">';
             $response .= '<p class="photo-reference">' . get_field('reference') . '</p>';
             $response .= '<p class="photo-category">';
@@ -216,6 +216,7 @@ function get_filtered_photos()
             'key' => 'annee',
             'value' => $annee,
             'compare' => '=',
+            
         );
     }
 

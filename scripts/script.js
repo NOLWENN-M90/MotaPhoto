@@ -34,7 +34,7 @@
     // Ouvrir la lightbox avec l'image, la catégorie et la référence
     function openLightbox(image, category, reference) {
         $('#lightbox-overlay').remove();
-      
+
         // Création de l'overlay de la lightbox
         var overlay = $('<div id="lightbox-overlay"></div>').css({
             position: 'fixed',
@@ -50,11 +50,12 @@
         }).appendTo('body');
 
         // Création de l'image en plein écran
-        var lightboxImage = $('<img id="lightbox-image">').attr('src', image).css({
+        var lightboxImage = $('<img id="lightbox-image"class="fade-in-zoom">').attr('src', image).css({
             maxWidth: '80%',
             maxHeight: '80%',
             margin: 'auto'
         }).appendTo(overlay);
+        currentIndex = allPhotosData.findIndex(photo => photo.src === image);
 
         // Ajout des détails de l'image
         var imageDetails = $('<div></div>').attr('id', 'lightbox-details').css({
@@ -102,8 +103,6 @@
             }).html('<span class="text" style="font-size: 16px;">Suivante</span> <span class="arrow" style="font-size: 24px;">&rarr;</span>')
                 .on('click', showNextImage).appendTo(overlay);
 
-                $('#lightbox-prev').off('click').on('click', showPreviousImage);
-                $('#lightbox-next').off('click').on('click', showNextImage);
         // Fermeture de la lightbox en cliquant sur l'overlay
         overlay.on('click', function (e) {
             if (e.target !== this) return;
@@ -115,7 +114,7 @@
         $('select').not('.select2-hidden-accessible').select2();
     }
     function reattachEventHandlersForNewElements() {
-        $('.fullscreen-icon i').off('click').on('click', function () {
+        $(document).on('click', '.fullscreen-icon i', function () {
             var $this = $(this);
             var imageSrc = $this.closest('.photo-content').find('img').attr('src');
             var category = $this.closest('.photo-linka').data('category');
@@ -123,41 +122,12 @@
             openLightbox(imageSrc, category, reference);
         });
     }
-    function attachPreviewArrowEvents() {
-        $('.preview-arrow').off('mouseover').on('mouseover', function () {
-            var $arrow = $(this);
-            var imageSrc = $arrow.attr('href');
-            var category = $arrow.data('category');
-            var reference = $arrow.data('reference');
-            openLightbox(imageSrc, category, reference);
-        });
-    }
-    function openCurrentLightbox() {
-        var photoData = allPhotosData[currentIndex];
-        openLightbox(photoData.src, photoData.category, photoData.reference);
-    }
 
-    // Réattacher les gestionnaires d'événements pour les icônes de plein écran après le chargement AJAX
-    function attachFullScreenIconEvents() {
-        $('.fullscreen-icon i').off('click').on('click', function (event) {
-            event.preventDefault();
-            var $icon = $(this);
-            var imageSrc = $icon.closest('.photo-content').find('img').attr('src');
-            var category = $icon.closest('.photo-linka').data('category');
-            var reference = $icon.closest('.photo-linka').data('reference');
-            currentIndex = allPhotosData.findIndex(photo => photo.src === imageSrc);
-            openLightbox(imageSrc, category, reference);{
-                
-                $('#lightbox-prev').off('click').on('click', showPreviousImage);
-                $('#lightbox-next').off('click').on('click', showNextImage);
-            }
-        });
-    }
 
     jQuery(document).ready(function ($) {
-       
+        reattachEventHandlersForNewElements();
         updateAllPhotosData();
-        
+
         var modal = document.getElementById('myModal');
         var overlay = document.getElementById("backgroundOverlay");
 
@@ -172,20 +142,21 @@
                 modal.style.display = "block";
                 if ($('body').hasClass('single-photo')) {
                     // Utilise la délégation d'événements pour capturer le clic sur le bouton
-                    $(document).on('click', '.myBtn', function() {
+                    $(document).on('click', '.myBtn', function () {
                         // Récupère la référence à partir de l'attribut data-reference du bouton cliqué
                         var photoReference = $(this).attr('data-reference');
-                       // Devrait afficher la référence dans la console
-                        
+                        // Devrait afficher la référence dans la console
+
                         // Vérifie que la référence n'est pas undefined
                         if (typeof photoReference !== 'undefined') {
                             // Trouve le champ du formulaire dans la modal et définit sa valeur
                             $('#myModal').find("input[name='your-reference']").val(photoReference);
                         }
-            
+
                         // Ouvre la modal
                         $('#myModal').show();
                     });
+
                 }
             });
         });
@@ -208,7 +179,7 @@
             mobileMenu.classList.toggle('is-active');
         });
 
-        
+
         $('.filter-select').on('change', function () {
             var category = $('#category_selector').val();
             var format = $('#format_selector').val();
@@ -243,19 +214,17 @@
                 },
                 success: function (response) {
                     $('#filtered-photos').html(response).fadeIn();
-                    updateAllPhotosData(); // Mise à jour des données pour la navigation dans la lightbox
-                    reattachEventHandlersForNewElements();
                     reinitSelect2ForNewElements();
 
-                    attachFullScreenIconEvents();
                     loading = false;
                 },
             });
+
         });
         $('#load-more').on('click', function () {
             if (loading) return; // Si le chargement est déjà en cours, n'exécute pas de nouveau
 
-           
+
             loading = true; // Marque le chargement en cours
 
             var offset = $('.photo-content.already-displayed').length;
@@ -276,13 +245,8 @@
                     if (response.trim() !== '') {
 
                         $('#loaded-photos').append(response).fadeIn();
-                        updateAllPhotosData(); // Mise à jour des données pour la navigation dans la lightbox
                         reinitSelect2ForNewElements();
-                        reattachEventHandlersForNewElements();
 
-                        attachPreviewArrowEvents();
-                        attachFullScreenIconEvents();
-                       
 
                         // Active les éléments de l'overlay sur les nouvelles photos
 
@@ -295,7 +259,7 @@
                             });
 
                             overlay.find('.fullscreen-icon i').on('click', function () {
-                                // Code pour gérer le clic sur l'icône de plein écran
+                                openLightbox(imageSrc, photoData.category, photoData.reference);
                             });
 
                         });
@@ -318,26 +282,30 @@
         // Réattacher les gestionnaires d'événements pour les icônes de plein écran après le chargement AJAX
         jQuery(document).off('click', '.fullscreen-icon i').on('click', '.fullscreen-icon i', function (event) {
             event.preventDefault();
+            
             var $icon = $(this);
             var imageSrc = $icon.closest('.photo-content').find('img').attr('src');
             var category = $icon.closest('.photo-linka').data('category');
             var reference = $icon.closest('.photo-linka').data('reference');
-            openLightbox(imageSrc, category, reference);
+            
+            openLightbox(imageSrc, category, reference, allPhotosData[currentIndex]);
+
+
+
         });
         jQuery(document).on('mouseover', '.preview-arrow', function () {
             loop = true;
             var $arrow = $(this);
-            var imageSrc = $arrow.attr('src');
+            var imageurl = $arrow.data('imageurl');
             var category = $arrow.data('category');
             var reference = $arrow.data('reference');
-            var photoIndex = allPhotosData.findIndex(photo => photo.src === imageSrc);
+            var photoIndex = allPhotosData.findIndex(photo => photo.src === imageurl);
             currentIndex = photoIndex !== -1 ? photoIndex : currentIndex;
+            openLightbox(imageurl, category, reference, allPhotosData[currentIndex]);
 
-            openLightbox(imageSrc, category, reference, allPhotosData[currentIndex]);
-            showPreviousImage();
-            showNextImage();
+
         });
 
     });
-    updateAllPhotosData();
+
 })(jQuery);

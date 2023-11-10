@@ -19,9 +19,9 @@
     <?php wp_body_open(); ?>
     <div class="background-overlay" id="backgroundOverlay"></div>
     <header>
-
+    <nav role="navigation" aria-label="<?php _e('Menu principal', 'text-domain'); ?>" class="menu-desktop">
         <img class="logo" src="/wp-content/themes/mota-theme/assets/NathalieMota.png" alt="logo">
-        <nav role="navigation" aria-label="<?php _e('Menu principal', 'text-domain'); ?>" class="menu-desktop">
+        
             <?php
             wp_nav_menu([
                 'theme_location' => 'header',

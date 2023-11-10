@@ -1,7 +1,7 @@
 <div class="container">
   <div class="formulaire">
     <form method="get" action="<?php echo esc_url(home_url('/')); ?>" id="filter-form" class="forma">
-
+<!-- Catégorie -->
       <label for="category_selector"></label>
       <select name="category_selector" id="category_selector" class="filter-select" data-type="category">
         <option value="">CATÉGORIES</option>
@@ -11,7 +11,7 @@
           <option value="<?php echo esc_attr($category->slug); ?>"><?php echo esc_html($category->name); ?></option>
         <?php endforeach; ?>
       </select>
-
+<!-- Format -->
       <label for="format_selector"></label>
       <select name="format_selector" id="format_selector" class="filter-select" data-type="format">
         <option value="">FORMATS</option>
@@ -21,6 +21,7 @@
           <option value="<?php echo esc_attr($format->slug); ?>"><?php echo esc_html($format->name); ?></option>
         <?php endforeach; ?>
       </select>
+<!-- Tri par date -->
       <div class="order_date">
         <label for="date_order"></label>
         <select name="date_order" id="date_order" class="filter-select" data-type="date">
@@ -37,20 +38,20 @@
     // Récupérer les valeurs des filtres
     $category_filter = isset($_GET['category_selector']) ? sanitize_text_field($_GET['category_selector']) : '';
     $format_filter = isset($_GET['format_selector']) ? sanitize_text_field($_GET['format_selector']) : '';
-    $annee_order = isset($_GET['date_order']) && !empty($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : null;
+    $date_order = isset($_POST['date_order']) ? sanitize_text_field($_POST['date_order']) : 'DESC'; // Par défaut, trier par ordre décroissant
     // Afficher toutes les photos sur la page d'accueil
     $args_all_photos = array(
       'post_type' => 'photo',
       'posts_per_page' => 8,
       'orderby' => 'meta_value_num', // Tri par la valeur du champ personnalisé
       'meta_key' => 'annee',  // Clé du champ personnalisé "annee"
-
+      'order' => $date_order,
     );
     // Si un ordre est défini, ajoutez le tri par année
-    if ($annee_order) {
+    if ($date_order) {
       $args_all_photos['orderby'] = 'meta_value_num';
       $args_all_photos['meta_key'] = 'annee';
-      $args_all_photos['order'] = $annee_order;
+      $args_all_photos['order'] = $date_order;
     }
     $query_all_photos = new WP_Query($args_all_photos);
 
@@ -63,7 +64,7 @@
 
         $category = !empty(get_the_category()) ? esc_attr(get_the_category()[0]->name) : '';
         $type = esc_attr(get_post_meta($photo_id, 'type', true));
-        $annee = isset($_GET['date']) ? sanitize_text_field($_GET['date']) : '';
+        $date_order= isset($_GET['date_order']) ? sanitize_text_field($_GET['date_order']) : '';
         $format = esc_attr(get_post_meta($photo_id, 'format', true));
 
         $link_url = add_query_arg(
@@ -71,7 +72,7 @@
             'id' => $photo_id,
             'category' => $category,
             'type' => $type,
-            'date' => $annee,
+            'date' => $date_order,
             'format' => $format,
           ),
 
