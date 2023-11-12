@@ -1,5 +1,13 @@
 /*
 Theme Name: Mota thème
+Author: Nom de l'auteur
+Description: Mota thème est un thème WordPress personnalisé, élégant et responsive, basé sur Twentytwentyone. Parfait pour un blog, un portfolio ou un site d'entreprise.
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: mota-theme
+Tags: responsive, moderne, élégant, blog, portfolio, entreprise
+Template: twentytwentyone
 */
 
 @font-face {
@@ -46,6 +54,10 @@ a:hover {
     /* Par défaut, l'overlay est masqué */
 }
 
+.logo2 {
+    display: none;
+}
+
 nav {
     width: 100%;
     height: 72px;
@@ -73,7 +85,7 @@ nav ul {
     cursor: pointer;
 }
 
-#mobile {
+#mobileMenuToggle {
     display: none;
 }
 
@@ -83,6 +95,7 @@ nav ul {
 
 .logo {
     object-fit: contain;
+
 }
 
 .banner {
@@ -114,29 +127,73 @@ nav ul {
     display: none;
 }
 
-#mobile-menu-toggle {
-    display: none;
-}
-
 @media (max-width: 768px) {
+    header {
+        margin-bottom: 10px;
+    }
+
     .menu-desktop {
         display: none;
     }
 
-    #mobile-menu.is-active {
-        display: block;
-        position: absolute;
-        /* autres styles pour le menu mobile ici */
-    }
-
-    #mobile-menu-toggle {
+    #mobileMenuToggle {
         display: block;
         background-color: white;
         position: relative;
         border: none;
-        left: 15px;
+        left: 335px;
+        padding-top: 5px;
         font-size: xx-large;
-        /* Affichez le bouton sur les appareils mobiles */
+        z-index: 1;
+    }
+
+    .mobile-menu-modal {
+        display: none; /* Caché par défaut */
+        position: fixed; /* Reste en place lors du défilement */
+        z-index: 1; /* S'assure qu'elle est au-dessus d'autres éléments */
+        left: 0;
+        top: 0;
+        width: 100%; /* Pleine largeur */
+        height: 100%; /* Pleine hauteur */
+        overflow: auto; /* Permet le défilement si nécessaire */
+        background-color: rgb(0,0,0); /* Couleur de fond */
+        background-color: rgba(0,0,0,0.4); /* Noir avec opacité */
+    }
+    
+    /* Contenu de la modal */
+    .mobile-menu-content {
+        position: relative;
+        background-color: #fefefe;
+        background-color: #fefefe;
+        margin-left: 20px;
+        margin-top: 60px;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 25%;
+        height: 280px;
+    }
+    
+    /* Bouton de fermeture */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .logo2 {
+        display: flex;
+        object-fit: contain;
+        position: relative;
+        margin-top: 15px;
+        right: 150px;
     }
 
     .banner {
@@ -151,38 +208,31 @@ nav ul {
         top: -150px;
     }
 
-    nav {
-        margin-left: -130px !important;
-    }
-
-    .mobile__content.active {
-        display: block;
-        /* Affichez le menu mobile lorsque la classe 'active' est ajoutée */
+    .forma {
+        margin-bottom: 30px;
     }
 
     .modal-content {
         position: relative;
-        margin-left: 15px;
-        left: -120px;
+        left: -190px;
         padding-left: 10px !important;
+        padding-right: 40px;
         max-width: 270px;
         height: 600px;
     }
 
     .modal-content img {
-        max-width: 280px !important;
+        max-width: 320px !important;
         left: -90px !important;
         margin-left: 80px;
         padding-right: 10px;
     }
 
-    input {
-        margin-left: -5px !important;
-    }
-
     .photo-content {
         width: 317px !important;
         height: 278px !important;
+        margin-top: -15px !important;
+        margin-bottom: 40px !important;
     }
 
     .photo-content img {
@@ -195,8 +245,8 @@ nav ul {
         width: 265px !important;
         position: relative;
         height: 397px !important;
-        left: -860px;
-        top: -450px;
+        left: -850px;
+        top: -430px;
     }
 
 
@@ -206,30 +256,31 @@ nav ul {
     }
 
     #bp {
-        padding-top: 20px !important;
-
-        flex-wrap: wrap;
-    }
-
-    .myBtn {
-        display: none;
-        position: relative;
-        top: 50px;
-        right: 255px;
+        margin-top: -350px !important;
+        margin-bottom: -30px !important;
+        margin-left: 30px !important;
     }
 
     #bp .myBtn {
-        margin-left: -600px !important;
+        margin-left: -880px !important;
+        margin-top: 70px;
+        width: 317px !important;
+    }
+
+    .titre {
+        margin-left: 30px;
+
     }
 
     #line-down {
-        width: 317px !important;
+
         margin: 0;
         padding-left: 0 !important;
+        margin-left: -30px !important;
     }
 
     #line {
-        width: 317px !important;
+
         margin-top: 80px !important;
         margin-left: -60px !important;
 
@@ -242,17 +293,13 @@ nav ul {
 
     .p {
         margin-top: 30px !important;
-        margin-left: 80px !important;
+        margin-left: 50px !important;
     }
 
     .affiche {
         flex-wrap: wrap;
         flex-direction: column;
         width: 844px !important;
-    }
-
-    #show-all-photos {
-        margin-left: 20px !important;
     }
 
     .footer {
@@ -266,8 +313,8 @@ nav ul {
     #menu-footer {
         flex-wrap: wrap;
         width: 317px !important;
-        margin-left: 30px !important;
-        margin-top: 10px !important;
+        margin-left: 70px !important;
+        margin-top: 30px !important;
         flex-direction: column;
     }
 
@@ -278,9 +325,20 @@ nav ul {
         justify-content: center;
     }
 
-    .menu {
-        display: none;
+    .container {
+        flex-direction: column;
+    }
 
+    .single-page.container {
+        margin-top: 450px !important;
+    }
+
+    .formulaire {
+        margin-top: 40px;
+    }
+
+    #load-more {
+        margin-left: 55px !important;
     }
 }
 
@@ -297,7 +355,7 @@ nav ul {
 
 /* Modal Content/Box */
 .modal-content {
-    font-family: 'Poppins' , sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: white;
     margin-top: -57px;
     margin-left: 160px;
@@ -309,11 +367,13 @@ nav ul {
 
     /* Could be more or less, depending on screen size */
 }
-.wpcf7-form-control.wpcf7-text.wpcf7-validates-as-required{
+
+.wpcf7-form-control.wpcf7-text.wpcf7-validates-as-required {
     height: 40px;
     border-radius: 8px;
 }
-.wpcf7-form-control.wpcf7-textarea{
+
+.wpcf7-form-control.wpcf7-textarea {
     border-radius: 8px;
 }
 
@@ -321,7 +381,7 @@ nav ul {
     width: 270px;
     height: 50px;
     border: none;
-    margin-left:20px;
+    margin-left: 20px;
     background-color: rgba(216, 216, 216, 1);
     border-radius: 2px;
     ;
@@ -334,21 +394,6 @@ nav ul {
     width: 670px;
 }
 
-/* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
 /* //footer // */
 
 #menu-footer {
@@ -356,12 +401,14 @@ nav ul {
     width: 1140px;
     margin-left: 220px;
 }
+
 nav.footer {
-    max-width: 1140px!important;
+    max-width: 1140px !important;
     display: flex;
     justify-content: center;
     margin: auto;
 }
+
 #menu-footer li {
     margin-right: 80px;
 }
@@ -469,9 +516,11 @@ nav.footer {
     position: relative;
 
 }
-#lightbox-overlay p{
-    font-family:'Poppins', sans-serif !important;
+
+#lightbox-overlay p {
+    font-family: 'Poppins', sans-serif !important;
 }
+
 .overlay-content {
     position: absolute;
     display: flex;
@@ -487,10 +536,21 @@ nav.footer {
     opacity: 0;
     transition: opacity 0.3s;
 }
+
 @keyframes zoom-in {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .fade-in-zoom {
@@ -500,14 +560,14 @@ nav.footer {
 
 .photo-content:hover .overlay::before {
     opacity: 1;
-  
+
 }
 
 .photo-content:hover .info-icon,
 .photo-content:hover .fullscreen-icon,
 .photo-content:hover .overlay-content {
     opacity: 1;
-    font-family: 'SpaceMono', sans-serif!important;
+    font-family: 'SpaceMono', sans-serif !important;
 }
 
 .photo-reference,
@@ -546,7 +606,7 @@ nav.footer {
 
 .select2-container {
     margin-right: 20px;
-    width:260px!important;
+    width: 260px !important;
 }
 
 .select2-results__option--selectable:hover {
@@ -566,10 +626,12 @@ nav.footer {
     left: 25px;
 }
 
-#filtered-photos, #loaded-photos {
+#filtered-photos,
+#loaded-photos {
     display: contents;
- 
+
 }
+
 /* bouton "charger plus" */
 
 #load-more {
@@ -649,7 +711,7 @@ nav.footer {
 
 #line-down {
     width: 92%;
-    border: 2px black;
+    border: 2px rgba(0, 0, 0, 1);
     padding-left: 5px;
     margin-bottom: -10px;
 
@@ -756,4 +818,3 @@ nav.footer {
     border: none;
     font-family: 'Space Mono', monospace;
 }
-

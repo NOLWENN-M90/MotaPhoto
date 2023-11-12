@@ -19,29 +19,34 @@
     <?php wp_body_open(); ?>
     <div class="background-overlay" id="backgroundOverlay"></div>
     <header>
-    <nav role="navigation" aria-label="<?php _e('Menu principal', 'text-domain'); ?>" class="menu-desktop">
-        <img class="logo" src="/wp-content/themes/mota-theme/assets/NathalieMota.png" alt="logo">
-        
+        <nav role="navigation" aria-label="<?php _e('Menu principal', 'text-domain'); ?>" class="menu-desktop">
+            <img class="logo" src="/wp-content/themes/mota-theme/assets/NathalieMota.png" alt="logo">
             <?php
             wp_nav_menu([
                 'theme_location' => 'header',
                 'container'      => false,
-                'menu_class'     => 'desktop-menu', 
+                'menu_class'     => 'desktop-menu',
             ]);
             ?>
         </nav>
 
-        <button id="mobile-menu-toggle" class="mobile-menu-toggle">☰</button>
 
-        <nav id="mobile-menu" class="mobile-menu" aria-label="<?php _e('Menu mobile', 'text-domain'); ?>">
-            <?php
-            wp_nav_menu([
-                'theme_location' => 'header',
-                'container'      => false,
-                'menu_class'     => 'mobile-menu', 
-            ]);
-            ?>
-        </nav>
+        <button id="mobileMenuToggle" class="mobile-menu-toggle">☰</button>
+        <img class="logo2" src="/wp-content/themes/mota-theme/assets/NathalieMota.png" alt="logo">
+        <div id="mobileMenuModal" class="mobile-menu-modal">
+            <div class="mobile-menu-content">
+                <nav id="mobileMenu" class="mobile-menu" aria-label="<?php _e('Menu mobile', 'text-domain'); ?>">
+                    <?php
+                    wp_nav_menu([
+                        'theme_location' => 'header',
+                        'container'      => false,
+                        'menu_class'     => 'mobile-menu-items',
+                    ]);
+                    ?>
+                    <span id="closeMobileMenu" class="close">&times;</span>
+                </nav>
+            </div>
+        </div>
         <?php include_once "template-part/contact.php"; ?>
 
     </header>

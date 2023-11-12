@@ -3,7 +3,7 @@
 <?php while (have_posts()) : the_post();
     $current_photo_id = get_the_ID(); // ID de la photo actuelle pour l'exclusion
 ?>
-    <div class="container" style="height: 844px; padding-top: 30px; text-transform: uppercase; margin-top:0px;">
+    <div class="single-page container" style="height: 844px; padding-top: 30px; text-transform: uppercase; margin-top:0px;">
         <div class="titre">
             <h2><?php the_title() ?></h2>
             <div class="list">
@@ -91,12 +91,6 @@
                     echo '</a>';
                 }
                 ?>
-                <!-- <a href="<?php echo esc_url($prev_image_url); ?>" class="preview-arrow thumbnail" data-reference="<?php echo esc_attr($prev_reference); ?>" data-category="<?php echo esc_attr($prev_category); ?>">
-                    <span class="carousel-arrow-left left-arrow">←</span>
-                </a>
-                <a href="<?php echo esc_url($next_image_url); ?>" class="preview-arrow thumbnail" data-reference="<?php echo esc_attr($next_reference); ?>" data-category="<?php echo esc_attr($next_category); ?>">
-                    <span class="carousel-arrow-right right-arrow">→</span>
-                </a> -->
             </div>
 
         </div>

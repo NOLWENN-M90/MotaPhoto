@@ -151,35 +151,40 @@
                         if (typeof photoReference !== 'undefined') {
                             // Trouve le champ du formulaire dans la modal et définit sa valeur
                             $('#myModal').find("input[name='your-reference']").val(photoReference);
+                            
                         }
 
                         // Ouvre la modal
                         $('#myModal').show();
+                
                     });
-
                 }
+                window.onclick = function(event) {
+                    if (event.target === overlay) {
+                        modal.style.display = 'none';
+                        overlay.style.display = 'none';
+                    }
+                };
+                
             });
         });
-
-        // Ferme la modal lorsqu'on clique en dehors de celle-ci
-        window.addEventListener('click', function (event) {
-            if (event.target === overlay) {
-                // Masque la modal et l'overlay lorsqu'on clique en dehors de la modal
-                modal.style.display = "none";
-                overlay.style.display = "none";
+        document.addEventListener('DOMContentLoaded', function () {
+            var mobileToggle = document.getElementById('mobileMenuToggle');
+            var mobileMenu = document.getElementsByClassName('mobile-menu');
+            var closeBtn = document.getElementById('closeMobileMenu');
+            mobileToggle.addEventListener('click', function () {
+               
+                mobileMenu.style.display = 'block';
+            });
+            closeBtn.addEventListener('click', function () {
+                mobileMenu.style.display = 'none';
+            });
+            window.onclick = function (event) {
+                if (event.target === mobileMenu) {
+                    mobileMenu.style.display = 'none';
+                }
             }
         });
-
-        // Sélectionnez le bouton "burger" et le menu
-        var mobileToggle = document.getElementById('mobile-menu-toggle');
-        var mobileMenu = document.getElementById('mobile-menu');
-
-        // Gérez le clic sur le bouton "burger"
-        mobileToggle.addEventListener('click', function () {
-            mobileMenu.classList.toggle('is-active');
-        });
-
-
         $('.filter-select').on('change', function () {
             var category = $('#category_selector').val();
             var format = $('#format_selector').val();
@@ -282,12 +287,12 @@
         // Réattacher les gestionnaires d'événements pour les icônes de plein écran après le chargement AJAX
         jQuery(document).off('click', '.fullscreen-icon i').on('click', '.fullscreen-icon i', function (event) {
             event.preventDefault();
-            
+
             var $icon = $(this);
             var imageSrc = $icon.closest('.photo-content').find('img').attr('src');
             var category = $icon.closest('.photo-linka').data('category');
             var reference = $icon.closest('.photo-linka').data('reference');
-            
+
             openLightbox(imageSrc, category, reference, allPhotosData[currentIndex]);
 
 
